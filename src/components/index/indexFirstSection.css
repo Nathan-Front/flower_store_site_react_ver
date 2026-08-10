@@ -1,0 +1,168 @@
+.index-first-sec {
+    width: 100%;
+    height: 100dvh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    gap: 1rem;
+}
+.sec-title {
+    font-size: clamp(3rem, 5vw, 6rem); 
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    letter-spacing: 1.5px;
+}
+.sec-title span {
+    display: block;
+    color: #182a2c;
+}
+.sec-title span:last-child {
+    color: #a64b66;
+}
+.index-first-sec p {
+    font-size: clamp(1.1rem, 1.5vw, 2.5rem);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1.2px;
+}
+.shop-now-btn {
+    width: fit-content;
+    padding: 1rem 1.5rem;
+    font-size: clamp(1.1rem, 1.5vw, 1.8rem);
+    border: none;
+    background-color: #2c3e35;
+    color: #c48b71;
+    border-radius: 12px;
+    transition: 0.3s ease;
+    letter-spacing: 1.5px;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+}
+.shop-now-btn:hover {
+    cursor: pointer;
+    transform: translateY(-8px);
+    color: #2c3e35;
+    background-color: #c48b71;
+}
+.desktop-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+.mobile-banner {
+    display: none;
+}
+@media only screen and (max-width: 640px) {
+    .desktop-banner {
+        display: none;
+    }
+    .mobile-banner {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: -1;
+        filter: blur(2px);
+        transform: scale(1.03);
+    }
+    .index-first-sec {
+        height: 100dvh;
+        max-height: 100dvh;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 2rem;
+    }
+    .sec-title {
+        margin-top: 8rem;
+    }
+    .sec-title span {
+        text-align: center;
+        width: 95%;
+        margin: 0 auto;
+    }
+    .index-first-sec p {
+        width: 90%;
+        margin: 0 auto;
+        text-align: center;
+    }
+}
+@media (min-width: 641px) and (max-width: 920px) {
+    .index-first-sec {
+        gap: 3rem;
+        max-height: 800px;
+    }
+    .desktop-banner {
+        filter: blur(2px);
+        transform: scale(1.03);
+    }
+    .sec-title {
+        margin: 0 0 0 3rem;
+    }
+    .index-first-sec p {
+        width: 50%;
+        margin: 0 0 0 3rem;
+    }
+    .shop-now-btn {
+        margin: 1rem 0 0 3rem;
+    }
+}
+@media (min-width: 921px) and (max-width: 1366px) {
+    .index-first-sec {
+        gap: 3rem;
+    }
+    .sec-title {
+        margin: 0 0 0 5rem;
+    }
+    .index-first-sec p {
+        margin: 0 0 0 5rem;
+    }
+    .shop-now-btn {
+        margin: 2rem 0 0 5rem;
+    }
+}
+@media (min-width: 1367px) and (max-width: 1536px) {
+    .index-first-sec {
+        gap: 3rem;
+    }
+    .sec-title {
+        margin: 0 0 0 5rem;
+    }
+    .index-first-sec p {
+        margin: 0 0 0 5rem;
+    }
+    .shop-now-btn {
+        margin: 2rem 0 0 5rem;
+    }
+}
+@media (min-width: 1537px) and (max-width: 1920px) {
+    .index-first-sec {
+        gap: 5rem;
+    }
+    .sec-title {
+        margin: 0 0 0 5rem;
+    }
+    .index-first-sec p {
+        margin: 0 0 0 5rem;
+    }
+    .shop-now-btn {
+        margin: 3rem 0 0 5rem;
+    }
+}
+@media (min-width: 1921px) and (max-width: 2560px) {
+    .index-first-sec {
+        gap: 5rem;
+    }
+    .sec-title {
+        margin: 0 0 0 5rem;
+    }
+    .index-first-sec p {
+        margin: 0 0 0 5rem;
+    }
+    .shop-now-btn {
+        margin: 3rem 0 0 5rem;
+    }
+}
