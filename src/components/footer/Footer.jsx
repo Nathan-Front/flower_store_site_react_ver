@@ -1,5 +1,65 @@
 import { Link } from "react-router-dom";
+import { validateEmail } from "../../script/emailValidator.js";
+import { useContext, useState } from "react";
+import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 export default function Footer() {
+  const initialForm = { email: "", _honey: "" };
+  const [isInput, setIsInput] = useState(initialForm);
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setIsInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const { setIsOpen, setSpinner } = useContext(OverlayContext); //overlay and spinner
+
+  const subscriberHandler = async (e) => {
+    e.preventDefault();
+    if (isInput._honey) {
+      console.log("Bot detected");
+      return;
+    }
+    const result = validateEmail(isInput.email);
+    if (!result) {
+      //setIsError(true);
+      return;
+    }
+
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbyKLPGoQElgHbTen7D6Xsqlwodlfaj3ikkim-QEeal7xp1a6iQR3ScmZQURg3ziFGLJ/exec";
+    const param = {
+      formType: "subscribe",
+      email: isInput.email,
+    };
+    setIsOpen(true);
+    setSpinner("loading");
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(param),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const result = await response.json();
+      if (result.success) {
+        alert(
+          "Thank you for subscribing. 🌸\n" +
+            "Watch out for some news or related information in the future.",
+        );
+        setIsInput(initialForm);
+      } else {
+        alert("Email already subscribed.");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsOpen(false);
+      setSpinner(null);
+    }
+  };
+
   return (
     <>
       <footer className="footer">
@@ -75,8 +135,11 @@ export default function Footer() {
               Subscribe to receive floral inspiration, care tips, and 10% off
               your first order.
             </p>
-            <form className="newsletter-form" id="subscribe-form">
-              <input type="hidden" name="formType" value="subscribe" />
+            <form
+              className="newsletter-form"
+              id="subscribe-form"
+              onSubmit={subscriberHandler}
+            >
               <input
                 type="email"
                 name="email"
@@ -85,8 +148,16 @@ export default function Footer() {
                 placeholder="Your email address"
                 required
                 aria-label="Email address"
+                onChange={inputHandler}
+                value={isInput.email}
               />
-              <input type="text" name="website" className="footer-honeypot" />
+              <input
+                type="text"
+                name="website"
+                className="footer-honeypot"
+                onChange={inputHandler}
+                value={isInput._honey}
+              />
               <button type="submit" id="subscribe-btn">
                 Join
               </button>
@@ -97,7 +168,7 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>&copy; 2026 Flos & Florere Co. All rights reserved.</p>
           <p>
-            Created by Jonathan
+            Created by Jonathan-
             <a
               href="https://nathan-front.github.io/Captain_of_the_Code_react_ver/"
               aria-label="Visit Jonathan's Portfolio"
