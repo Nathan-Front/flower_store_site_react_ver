@@ -6,15 +6,30 @@ import LoadingError from "../loadingComponent/LoadingError.jsx";
 import { getProductBadge } from "../hooks/productBadge.js";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
-import { useState, useRef } from "react";
+import { getCardsPerPage } from "../hooks/viewportPage.js";
+import { useState, useEffect, useRef } from "react";
 export default function ShopSecondSection() {
   const {
     data: products, //rename the data and render its contents
     loading,
     error,
   } = useFetch("products", "products", formatProducts);
+
+  //Get the cards per page per window width size
+  const [cardsPerPage, setCardsPerPage] = useState(getCardsPerPage());
+  //Make the thepage listen to screen width changes
+  useEffect(() => {
+    const handleResize = () => {
+      setCardsPerPage(getCardsPerPage());
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 12;
+  const productsPerPage = cardsPerPage;
   const lastProductIndex = currentPage * productsPerPage; //last product in each page to understand until where display will be
   const firstProductIndex = lastProductIndex - productsPerPage; //Display products per page
 
