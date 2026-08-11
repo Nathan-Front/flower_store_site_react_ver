@@ -14,7 +14,7 @@ export default function Nav() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="./shop.html">Shop</Link>
+            <Link to="/shop">Shop</Link>
           </li>
           <li>
             <Link to="./about.html">About</Link>

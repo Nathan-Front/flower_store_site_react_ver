@@ -30,3 +30,22 @@ export function formatWhyUsCards(data) {
     cardText: card.CardText,
   }));
 }
+export function formatProducts(products) {
+  return products.map((product) => ({
+    no: Number(product.ID),
+    stock: Number(product.STOCK) || 0,
+    product: product.Product,
+    price: Number(product.Price),
+    description: product.Description,
+    image: product.Image,
+    imgAlt: product.ImageAlt,
+    review: Number(product.Reviews),
+    rateTotal: Number(product.Rating),
+    condition: product.Condition,
+    category: product.Category,
+    color: product.Color,
+    occasion: product.Occasion
+      ? product.Occasion.split(",").map((item) => item.trim())
+      : [],
+  }));
+}

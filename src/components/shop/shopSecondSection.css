@@ -300,7 +300,8 @@
     gap: 1rem;
     align-items: stretch;
 }
-.bouquet-con ul li {
+/*put a delay animation of li element in react*/
+.bouquet-con> ul> li {
     animation: cardReveal 0.5s ease forwards;
     opacity: 0;
     display: flex;
