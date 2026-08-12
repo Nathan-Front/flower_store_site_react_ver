@@ -95,6 +95,13 @@ export default function ShopSecondSection() {
     setDisplay((current) => (current === filterName ? null : filterName));
     //changeSign("−");
   };
+
+  //Set initial state values
+  const [minPrice, setMinPrice] = useState(10);
+  const [maxPrice, setMaxPrice] = useState(100);
+  //For styling
+  const left = (minPrice / 150) * 100;
+  const right = (maxPrice / 150) * 100;
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -151,20 +158,37 @@ export default function ShopSecondSection() {
                 >
                   <div className="price-values">
                     <span>
-                      $<span id="min-value">20</span>
+                      $<span id="min-value">{minPrice}</span>
                     </span>
                     <span>
-                      $<span id="max-value">120</span>
+                      $<span id="max-value">{maxPrice}</span>
                     </span>
                   </div>
                   <div className="range-slider">
-                    <div className="slider-track"></div>
+                    <div
+                      className="slider-track"
+                      style={{
+                        background: `linear-gradient(
+                          to right,
+                          #ead9df ${left}%,
+                          #a64b66 ${left}%,
+                          #a64b66 ${right}%,
+                          #ead9df ${right}%
+                        )`,
+                      }}
+                    ></div>
                     <input
                       type="range"
                       id="min-price"
                       min="0"
                       max="149"
-                      defaultValue="10"
+                      value={minPrice}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value <= maxPrice) {
+                          setMinPrice(value);
+                        }
+                      }}
                       aria-label="min-price"
                     />
                     <input
@@ -172,7 +196,13 @@ export default function ShopSecondSection() {
                       id="max-price"
                       min="0"
                       max="150"
-                      defaultValue="100"
+                      value={maxPrice}
+                      onChange={(e) => {
+                        const value = Number(e.target.value);
+                        if (value >= minPrice) {
+                          setMaxPrice(value);
+                        }
+                      }}
                       aria-label="max-price"
                     />
                   </div>
