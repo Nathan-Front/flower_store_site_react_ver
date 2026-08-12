@@ -16,29 +16,6 @@ export default function ShopSecondSection() {
     error,
   } = useFetch("products", "products", formatProducts);
 
-  //Get the cards per page per window width size
-  const [cardsPerPage, setCardsPerPage] = useState(getCardsPerPage());
-  //Make the thepage listen to screen width changes
-  useEffect(() => {
-    const handleResize = () => {
-      setCardsPerPage(getCardsPerPage());
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  //Always reveal content on top
-  const shopSectionRef = useRef(null);
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    shopSectionRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
   const fieldsetContents = [
     {
       title: "Categories",
@@ -78,11 +55,11 @@ export default function ShopSecondSection() {
     { value: "yellow", className: "yellow" },
     { value: "orange", className: "orange" },
   ];
+
   const [isSetDisplay, setDisplay] = useState(null);
 
   const filterDisplay = (filterName) => {
     setDisplay((current) => (current === filterName ? null : filterName));
-    //changeSign("−");
   };
 
   //Set initial state values
@@ -113,19 +90,52 @@ export default function ShopSecondSection() {
     return categoryMatch && occasionMatch && colorMatch && priceMatch;
   });
 
+  //Get the cards per page per window width size
+  const [cardsPerPage, setCardsPerPage] = useState(getCardsPerPage());
+  //Make the the page listen to screen width changes
+  useEffect(() => {
+    const handleResize = () => {
+      setCardsPerPage(getCardsPerPage());
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  //Always reveal content from top
+  const shopSectionRef = useRef(null);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    shopSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = cardsPerPage;
   const lastProductIndex = currentPage * productsPerPage; //last product in each page to understand until where display will be
   const firstProductIndex = lastProductIndex - productsPerPage; //Display products per page
-
   const currentProducts = filteredProducts.slice(
+    //use the filteredProducts instead of doing it directly from array
     firstProductIndex,
     lastProductIndex,
-  ); //Create starting and ending per page
+  );
+  //Create starting and ending per page
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage); //calculate pages
-  //console.log(currentProducts);
   const displayStart = firstProductIndex + 1;
   const displayEnd = Math.min(lastProductIndex, filteredProducts.length);
+
+  //reset filters
+  const resetFilterHandler = () => {
+    setDisplay(null);
+    setMinPrice(10);
+    setMaxPrice(100);
+    setSelectedCategory("all-bouquets");
+    setSelectedOccasion("all-section");
+    setSelectedColor("all-color");
+  };
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -171,7 +181,7 @@ export default function ShopSecondSection() {
                                   setSelectedOccasion(e.target.value);
                                 }
                               }
-                              setCurrentPage(1);
+                              setCurrentPage(1); //reset the page to 1 when filtering
                             }}
                           />
                           <span className="flower-category">{item.label}</span>
@@ -271,7 +281,10 @@ export default function ShopSecondSection() {
                         id={item.className}
                         aria-label={item.className}
                         checked={selectedColor === item.value}
-                        onChange={(e) => setSelectedColor(e.target.value)}
+                        onChange={(e) => {
+                          setSelectedColor(e.target.value);
+                          setCurrentPage(1);
+                        }}
                       />
                       <span className={`checkmark ${item.className}`}></span>
                     </label>
@@ -279,7 +292,11 @@ export default function ShopSecondSection() {
                 </div>
               </li>
               <li>
-                <button type="button" className="reset-filter">
+                <button
+                  type="button"
+                  className="reset-filter"
+                  onClick={resetFilterHandler}
+                >
                   Reset filter
                 </button>
               </li>
@@ -322,7 +339,11 @@ export default function ShopSecondSection() {
                   <div className="no-products">
                     <p>No bouquets match your selected filters.</p>
 
-                    <button type="button" className="no-bouquet-reset-btn">
+                    <button
+                      type="button"
+                      className="no-bouquet-reset-btn"
+                      onClick={resetFilterHandler}
+                    >
                       Reset Filters
                     </button>
                   </div>
