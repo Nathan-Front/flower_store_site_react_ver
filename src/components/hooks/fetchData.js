@@ -4,7 +4,7 @@ export async function fetchSpecificSheet(sheetType, key, dataFormatter) {
   try {
     const response = await fetch(`${API_URL}?type=${sheetType}`); //send type to just fetch related files only
     if (!response.ok) {
-      throw new Error("Failed to fetch cards");
+      throw new Error("Failed to fetch data");
     }
     const data = await response.json();
 

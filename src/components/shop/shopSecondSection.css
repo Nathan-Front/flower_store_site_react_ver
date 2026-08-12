@@ -83,16 +83,16 @@
     display: flex;
 }
 .price-filter {
-    display: none;
+    display: flex;
+    padding: 4px;
     width: 100%;
     background:#fcfaf7;
     border: 1px solid #ece4e1;
     border-radius: 0.5rem;
     transition: 0.3s;
 }
-.price-filter.price-filter-pad {
-    display: flex;
-    padding: 4px;
+.price-filter-pad {
+    
 } 
 .price-values {
     display: flex;

@@ -8,6 +8,7 @@ import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { getCardsPerPage } from "../hooks/viewportPage.js";
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 export default function ShopSecondSection() {
   const {
     data: products, //rename the data and render its contents
@@ -48,6 +49,52 @@ export default function ShopSecondSection() {
       block: "start",
     });
   };
+
+  const fieldsetContents = [
+    {
+      title: "Categories",
+      filterOpt: "categories",
+      categories: [
+        { value: "all-bouquets", label: "All Bouquets" },
+        { value: "rose", label: "Roses" },
+        { value: "lily", label: "Lilies" },
+        { value: "tulip", label: "Tulips" },
+        { value: "daisy", label: "Daisy" },
+        { value: "hydrangeas", label: "Hydrangeas" },
+        { value: "mix", label: "Mixed Flowers" },
+      ],
+    },
+    {
+      title: "Occasions",
+      filterOpt: "occasions",
+      categories: [
+        { value: "all-section", label: "All Occasions" },
+        { value: "Birthday", label: "Birthday" },
+        { value: "Anniversary", label: "Anniversary" },
+        { value: "Valentine's Day", label: "Valentine's Day" },
+        { value: "Mother's Day", label: "Mother's Day" },
+        { value: "Get Well Soon", label: "Get Well Soon" },
+        { value: "Sympathy", label: "Sympathy" },
+        { value: "Congratulations", label: "Congratulations" },
+      ],
+    },
+  ];
+  const colors = [
+    { value: "all-color", className: "all-color" },
+    { value: "red", className: "red" },
+    { value: "white", className: "white" },
+    { value: "pink", className: "pink" },
+    { value: "black", className: "black" },
+    { value: "purple", className: "purple" },
+    { value: "yellow", className: "yellow" },
+    { value: "orange", className: "orange" },
+  ];
+  const [isSetDisplay, setDisplay] = useState(null);
+
+  const filterDisplay = (filterName) => {
+    setDisplay((current) => (current === filterName ? null : filterName));
+    //changeSign("−");
+  };
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -55,118 +102,53 @@ export default function ShopSecondSection() {
           <div className="left-top-con">
             <ul>
               <li className="left-category">
-                <fieldset>
-                  <h3 className="category-title">
-                    Categories<span>+</span>
-                  </h3>
-                  <div className="category-list">
-                    <label>
-                      <input
-                        type="radio"
-                        name="category"
-                        value="all-bouquets"
-                        id="all-bouquets"
-                      />
-                      <span className="flower-category">All Bouquets</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="rose" />
-                      <span className="flower-category">Roses</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="lily" />
-                      <span className="flower-category">Lilies</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="tulip" />
-                      <span className="flower-category">Tulips</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="daisy" />
-                      <span className="flower-category">Daisy</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="hydrangeas" />
-                      <span className="flower-category">Hydrangeas</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="category" value="mix" />
-                      <span className="flower-category">Mixed Flowers</span>
-                    </label>
-                  </div>
-                </fieldset>
-              </li>
-              <li className="left-category radio-category">
-                <fieldset>
-                  <h3 className="category-title">
-                    Occasions<span>+</span>
-                  </h3>
-                  <div className="category-list">
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="all-section"
-                        id="all-section"
-                      />
-                      <span className="ocassion-category">All Occasions</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="occasions" value="Birthday" />
-                      <span className="ocassion-category">Birthday</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="Anniversary"
-                      />
-                      <span className="ocassion-category">Anniversary</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="Valentine's Day"
-                      />
-                      <span className="ocassion-category">Valentine's Day</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="Mother's Day"
-                      />
-                      <span className="ocassion-category">Mother's Day</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="Get Well Soon"
-                      />
-                      <span className="ocassion-category">Get Well Soon</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="occasions" value="Sympathy" />
-                      <span className="ocassion-category">Sympathy</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="occasions"
-                        value="Congratulations"
-                      />
-                      <span className="ocassion-category">Congratulations</span>
-                    </label>
-                  </div>
-                </fieldset>
+                {fieldsetContents.map((fieldCon, index) => (
+                  <fieldset key={index}>
+                    <h3
+                      className="category-title"
+                      onClick={() => filterDisplay(fieldCon.filterOpt)}
+                    >
+                      {fieldCon.title}
+                      <span>
+                        {isSetDisplay === fieldCon.filterOpt ? "−" : "+"}
+                      </span>
+                    </h3>
+                    <div
+                      className={
+                        isSetDisplay === fieldCon.filterOpt
+                          ? "category-list showCategory"
+                          : "category-list"
+                      }
+                    >
+                      {fieldCon.categories.map((item, index) => (
+                        <label key={index}>
+                          <input
+                            type="radio"
+                            name="category"
+                            value={item.value}
+                            id={item.value}
+                          />
+                          <span className="flower-category">{item.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                ))}
               </li>
               <li className="left-category">
-                <h3 className="category-title">
-                  Price Range<span>+</span>
+                <h3
+                  className="category-title"
+                  onClick={() => filterDisplay("price")}
+                >
+                  Price Range<span>{isSetDisplay === "price" ? "−" : "+"}</span>
                 </h3>
-                <div className="category-list price-filter">
+                <div
+                  className={
+                    isSetDisplay === "price"
+                      ? "category-list price-filter showCategory"
+                      : "category-list price-filter"
+                  }
+                >
                   <div className="price-values">
                     <span>
                       $<span id="min-value">20</span>
@@ -198,90 +180,31 @@ export default function ShopSecondSection() {
               </li>
 
               <li className="left-category">
-                <h3 className="category-title">
-                  Color<span>+</span>
+                <h3
+                  className="category-title"
+                  onClick={() => filterDisplay("colors")}
+                >
+                  Color<span>{isSetDisplay === "colors" ? "−" : "+"}</span>
                 </h3>
-                <div className="category-list color-category">
-                  <label className="color-label">
-                    <input
-                      type="radio"
-                      name="color"
-                      value="all-color"
-                      id="all-color"
-                      aria-label="all-color"
-                    />
-                    <span className="checkmark all-color"></span>
-                  </label>
-                  <label className="color-label">
-                    <input
-                      type="radio"
-                      name="color"
-                      value="red"
-                      id="all-red"
-                      aria-label="all-red"
-                    />
-                    <span className="checkmark red"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="white"
-                      id="all-white"
-                      aria-label="all-white"
-                    />
-                    <span className="checkmark white"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="pink"
-                      id="all-pink"
-                      aria-label="all-pink"
-                    />
-                    <span className="checkmark pink"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="black"
-                      id="all-black"
-                      aria-label="all-black"
-                    />
-                    <span className="checkmark black"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="purple"
-                      id="all-purple"
-                      aria-label="all-purple"
-                    />
-                    <span className="checkmark purple"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="yellow"
-                      id="all-yellow"
-                      aria-label="all-yellow"
-                    />
-                    <span className="checkmark yellow"></span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="color"
-                      value="orange"
-                      id="all-orange"
-                      aria-label="all-orange"
-                    />
-                    <span className="checkmark orange"></span>
-                  </label>
+                <div
+                  className={
+                    isSetDisplay === "colors"
+                      ? "category-list color-category showCategory"
+                      : "category-list color-category"
+                  }
+                >
+                  {colors.map((item, index) => (
+                    <label className="color-label" key={index}>
+                      <input
+                        type="radio"
+                        name="color"
+                        value={item.value}
+                        id={item.className}
+                        aria-label={item.className}
+                      />
+                      <span className={`checkmark ${item.className}`}></span>
+                    </label>
+                  ))}
                 </div>
               </li>
               <li>
@@ -298,7 +221,7 @@ export default function ShopSecondSection() {
             />
             <h3>Same-day Delivery</h3>
             <p>Order by 2 PM for same-day delivery in select areas.</p>
-            <a href="/contact.html">Learn More →</a>
+            <Link to="/contact">Learn More →</Link>
           </div>
         </div>
         <div className="right-con">
