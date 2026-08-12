@@ -91,9 +91,6 @@
     border-radius: 0.5rem;
     transition: 0.3s;
 }
-.price-filter-pad {
-    
-} 
 .price-values {
     display: flex;
     justify-content: space-between;
@@ -276,7 +273,9 @@
 .left-bottom-con a {
     width: 90%;
 }
-
+.no-bouquet-reset-btn {
+    padding: 4px 6px;
+}
 
 .right-con {
     padding: 0 16px;

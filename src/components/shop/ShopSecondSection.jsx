@@ -29,17 +29,6 @@ export default function ShopSecondSection() {
     };
   }, []);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = cardsPerPage;
-  const lastProductIndex = currentPage * productsPerPage; //last product in each page to understand until where display will be
-  const firstProductIndex = lastProductIndex - productsPerPage; //Display products per page
-
-  const currentProducts = products.slice(firstProductIndex, lastProductIndex); //Create starting and ending per page
-  const totalPages = Math.ceil(products.length / productsPerPage); //calculate pages
-  //console.log(currentProducts);
-  const displayStart = firstProductIndex + 1;
-  const displayEnd = Math.min(lastProductIndex, products.length);
-
   //Always reveal content on top
   const shopSectionRef = useRef(null);
   const handlePageChange = (page) => {
@@ -54,7 +43,7 @@ export default function ShopSecondSection() {
     {
       title: "Categories",
       filterOpt: "categories",
-      categories: [
+      option: [
         { value: "all-bouquets", label: "All Bouquets" },
         { value: "rose", label: "Roses" },
         { value: "lily", label: "Lilies" },
@@ -67,7 +56,7 @@ export default function ShopSecondSection() {
     {
       title: "Occasions",
       filterOpt: "occasions",
-      categories: [
+      option: [
         { value: "all-section", label: "All Occasions" },
         { value: "Birthday", label: "Birthday" },
         { value: "Anniversary", label: "Anniversary" },
@@ -102,6 +91,41 @@ export default function ShopSecondSection() {
   //For styling
   const left = (minPrice / 150) * 100;
   const right = (maxPrice / 150) * 100;
+
+  //filter function
+  const [selectedCategory, setSelectedCategory] = useState("all-bouquets");
+  const [selectedOccasion, setSelectedOccasion] = useState("all-section");
+  const [selectedColor, setSelectedColor] = useState("all-color");
+
+  const filteredProducts = products.filter((item) => {
+    const categoryMatch =
+      selectedCategory === "all-bouquets" || item.category === selectedCategory; //category from data formatter
+
+    const occasionMatch =
+      selectedOccasion === "all-section" ||
+      item.occasion.includes(selectedOccasion); //occasion from data formatter
+
+    const colorMatch =
+      selectedColor === "all-color" || item.color === selectedColor;
+
+    const priceMatch = item.price >= minPrice && item.price <= maxPrice;
+
+    return categoryMatch && occasionMatch && colorMatch && priceMatch;
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = cardsPerPage;
+  const lastProductIndex = currentPage * productsPerPage; //last product in each page to understand until where display will be
+  const firstProductIndex = lastProductIndex - productsPerPage; //Display products per page
+
+  const currentProducts = filteredProducts.slice(
+    firstProductIndex,
+    lastProductIndex,
+  ); //Create starting and ending per page
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage); //calculate pages
+  //console.log(currentProducts);
+  const displayStart = firstProductIndex + 1;
+  const displayEnd = Math.min(lastProductIndex, filteredProducts.length);
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -127,13 +151,28 @@ export default function ShopSecondSection() {
                           : "category-list"
                       }
                     >
-                      {fieldCon.categories.map((item, index) => (
+                      {fieldCon.option.map((item, index) => (
                         <label key={index}>
                           <input
                             type="radio"
-                            name="category"
+                            name={fieldCon.filterOpt}
                             value={item.value}
                             id={item.value}
+                            checked={
+                              fieldCon.filterOpt === "categories"
+                                ? selectedCategory === item.value
+                                : selectedOccasion === item.value
+                            }
+                            onChange={(e) => {
+                              {
+                                if (fieldCon.filterOpt === "categories") {
+                                  setSelectedCategory(e.target.value);
+                                } else if (fieldCon.filterOpt === "occasions") {
+                                  setSelectedOccasion(e.target.value);
+                                }
+                              }
+                              setCurrentPage(1);
+                            }}
                           />
                           <span className="flower-category">{item.label}</span>
                         </label>
@@ -231,6 +270,8 @@ export default function ShopSecondSection() {
                         value={item.value}
                         id={item.className}
                         aria-label={item.className}
+                        checked={selectedColor === item.value}
+                        onChange={(e) => setSelectedColor(e.target.value)}
                       />
                       <span className={`checkmark ${item.className}`}></span>
                     </label>
@@ -277,54 +318,64 @@ export default function ShopSecondSection() {
             {error && <LoadingError />}
             {!loading && !error && (
               <ul className="flower-grid">
-                {currentProducts.map((item, index) => (
-                  <li
-                    key={item.no}
-                    style={{
-                      animationDelay: `${index * 100}ms`,
-                    }}
-                  >
-                    <div className="hover-cards">
-                      {item.condition && (
-                        <small className={`flower-badge ${item.condition}`}>
-                          {getProductBadge(item.condition)}
-                        </small>
-                      )}
-                      <img
-                        src={item.image}
-                        alt={`${item.imgAlt}-image`}
-                        className="bouquet-img"
-                        loading="lazy"
-                      />
-                      <div className="flower-info">
-                        <div className="product-name">
-                          <h4>{item.product}</h4>
-                          <img
-                            src="./images/shop/secondSection/heart-round.svg"
-                            alt="heart-icon"
-                            className="flower-heart-icon"
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="product-description">
-                          <p>{item.description}</p>
-                        </div>
-                        <div className="product-rating">
-                          {displayProductRating(item)}
-                        </div>
-                        <div className="product-price">
-                          <span className="flower-price">
-                            {formatPrice(item.price)}
-                          </span>
-                          <button className="cart-btn">
-                            <i className="fa-solid fa-cart-shopping cart-icon"></i>
-                            <span>Add To Cart</span>
-                          </button>
+                {filteredProducts.length === 0 ? (
+                  <div className="no-products">
+                    <p>No bouquets match your selected filters.</p>
+
+                    <button type="button" className="no-bouquet-reset-btn">
+                      Reset Filters
+                    </button>
+                  </div>
+                ) : (
+                  currentProducts.map((item, index) => (
+                    <li
+                      key={item.no}
+                      style={{
+                        animationDelay: `${index * 100}ms`,
+                      }}
+                    >
+                      <div className="hover-cards">
+                        {item.condition && (
+                          <small className={`flower-badge ${item.condition}`}>
+                            {getProductBadge(item.condition)}
+                          </small>
+                        )}
+                        <img
+                          src={item.image}
+                          alt={`${item.imgAlt}-image`}
+                          className="bouquet-img"
+                          loading="lazy"
+                        />
+                        <div className="flower-info">
+                          <div className="product-name">
+                            <h4>{item.product}</h4>
+                            <img
+                              src="./images/shop/secondSection/heart-round.svg"
+                              alt="heart-icon"
+                              className="flower-heart-icon"
+                              loading="lazy"
+                            />
+                          </div>
+                          <div className="product-description">
+                            <p>{item.description}</p>
+                          </div>
+                          <div className="product-rating">
+                            {displayProductRating(item)}
+                          </div>
+                          <div className="product-price">
+                            <span className="flower-price">
+                              {formatPrice(item.price)}
+                            </span>
+                            <button className="cart-btn">
+                              <i className="fa-solid fa-cart-shopping cart-icon"></i>
+                              <span>Add To Cart</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  ))
+                )}
               </ul>
             )}
             <div className="pagination">
