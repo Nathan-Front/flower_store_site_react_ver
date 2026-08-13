@@ -1,5 +1,8 @@
-import { aboutCards, aboutBottomCards } from "../components/about/aboutCard.js";
-import { whyChooseUs } from "../components/about/whyUs.js";
+import {
+  aboutCards,
+  aboutBottomCards,
+} from "../../src/components/about/aboutCard.js";
+import { whyChooseUs } from "../../src/components/about/whyUs.js";
 export function renderAboutCards() {
   const cards = document.querySelector(".about-card-list");
   if (!cards) return;
