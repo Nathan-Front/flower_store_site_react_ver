@@ -5,6 +5,7 @@ import { formatFilterCards } from "../hooks/dataFormatter.js";
 import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import useSectionIntersection from "../hooks/intersection.js";
+import { useNavigate } from "react-router-dom";
 export default function IndexThirdSection() {
   const {
     data: filterCards, //rename the data and render its contents
@@ -17,6 +18,9 @@ export default function IndexThirdSection() {
   );
   //console.log(filterCards); //for debugging only
   const { sectionRef, showSection } = useSectionIntersection();
+
+  //filter function add this to the button then declare param to shop page
+  const navigate = useNavigate();
   return (
     <>
       <section className="index-third-sec">
@@ -60,7 +64,15 @@ export default function IndexThirdSection() {
           {!loading && !error && (
             <ul className="occasion-list">
               {filterCards.map((item) => (
-                <li key={item.no} className="to-shop-filter-item">
+                <li
+                  key={item.no}
+                  className="to-shop-filter-item"
+                  onClick={() =>
+                    navigate(
+                      `/shop?occasion=${encodeURIComponent(item.filterValue)}`,
+                    )
+                  }
+                >
                   <div className="image-wrapper">
                     <img
                       src={item.mainImage}

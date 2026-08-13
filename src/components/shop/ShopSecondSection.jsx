@@ -8,7 +8,7 @@ import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { getCardsPerPage } from "../hooks/viewportPage.js";
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 export default function ShopSecondSection() {
   const {
     data: products, //rename the data and render its contents
@@ -18,7 +18,7 @@ export default function ShopSecondSection() {
 
   const fieldsetContents = [
     {
-      title: "Categories",
+      title: "Bouquets",
       filterOpt: "categories",
       option: [
         { value: "all-bouquets", label: "All Bouquets" },
@@ -56,11 +56,20 @@ export default function ShopSecondSection() {
     { value: "orange", className: "orange" },
   ];
 
-  const [isSetDisplay, setDisplay] = useState(null);
+  //filter function from home page
+  const [searchParams, setSearchParams] = useSearchParams();
+  const occasionFromURL = searchParams.get("occasion");
 
-  const filterDisplay = (filterName) => {
-    setDisplay((current) => (current === filterName ? null : filterName));
-  };
+  const [selectedOccasion, setSelectedOccasion] = useState(
+    occasionFromURL || "all-section", //also use for shop page
+  );
+  //for displaying filter options
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isOccasionOpen, setIsOccasionOpen] = useState(
+    Boolean(occasionFromURL),
+  );
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [isColorOpen, setIsColorOpen] = useState(false);
 
   //Set initial state values
   const [minPrice, setMinPrice] = useState(10);
@@ -69,9 +78,8 @@ export default function ShopSecondSection() {
   const left = (minPrice / 150) * 100;
   const right = (maxPrice / 150) * 100;
 
-  //filter function
+  //filter function for shop page use the filter occasion above
   const [selectedCategory, setSelectedCategory] = useState("all-bouquets");
-  const [selectedOccasion, setSelectedOccasion] = useState("all-section");
   const [selectedColor, setSelectedColor] = useState("all-color");
 
   const filteredProducts = products.filter((item) => {
@@ -129,17 +137,52 @@ export default function ShopSecondSection() {
 
   //reset filters
   const resetFilterHandler = () => {
-    setDisplay(null);
-    setMinPrice(10);
-    setMaxPrice(100);
     setSelectedCategory("all-bouquets");
     setSelectedOccasion("all-section");
     setSelectedColor("all-color");
+    setIsCategoryOpen(false);
+    setIsOccasionOpen(false);
+    setSearchParams({});
+    setMinPrice(10);
+    setMaxPrice(100);
+    setIsPriceOpen(false);
+    setIsColorOpen(false);
   };
+
+  //Capitalize first letter of displayed filters
+  const capitalizeFirst = (value) => {
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
+  //displaying filters on mobileviewport
+  const [mobileFilter, setMobileFilter] = useState(false);
+  const filterContainerRef = useRef(null);
+  const filterButtonRef = useRef(null); //use specific ref for button since it is outside the filterContainerRef to be displayed
+  useEffect(() => {
+    const outsideClickHandler = (event) => {
+      if (!mobileFilter) return;
+      const clickedInsideFilter = filterContainerRef.current?.contains(
+        event.target,
+      );
+      const clickedFilterButton = filterButtonRef.current?.contains(
+        event.target,
+      );
+      if (!clickedInsideFilter && !clickedFilterButton) {
+        setMobileFilter(false);
+      }
+    };
+    document.addEventListener("mousedown", outsideClickHandler);
+    return () => {
+      document.removeEventListener("mousedown", outsideClickHandler);
+    };
+  }, [mobileFilter]);
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
-        <div className="left-con">
+        <div
+          className={mobileFilter ? "left-con show-filters " : "left-con"}
+          ref={filterContainerRef}
+        >
           <div className="left-top-con">
             <ul>
               <li className="left-category">
@@ -147,16 +190,30 @@ export default function ShopSecondSection() {
                   <fieldset key={index}>
                     <h3
                       className="category-title"
-                      onClick={() => filterDisplay(fieldCon.filterOpt)}
+                      onClick={() => {
+                        fieldCon.filterOpt === "categories"
+                          ? setIsCategoryOpen((prev) => !prev)
+                          : setIsOccasionOpen((prev) => !prev);
+                      }}
                     >
                       {fieldCon.title}
                       <span>
-                        {isSetDisplay === fieldCon.filterOpt ? "−" : "+"}
+                        {(
+                          fieldCon.filterOpt === "categories"
+                            ? isCategoryOpen
+                            : isOccasionOpen
+                        )
+                          ? "−"
+                          : "+"}
                       </span>
                     </h3>
                     <div
                       className={
-                        isSetDisplay === fieldCon.filterOpt
+                        (
+                          fieldCon.filterOpt === "categories"
+                            ? isCategoryOpen
+                            : isOccasionOpen
+                        )
                           ? "category-list showCategory"
                           : "category-list"
                       }
@@ -194,13 +251,13 @@ export default function ShopSecondSection() {
               <li className="left-category">
                 <h3
                   className="category-title"
-                  onClick={() => filterDisplay("price")}
+                  onClick={() => setIsPriceOpen((prev) => !prev)}
                 >
-                  Price Range<span>{isSetDisplay === "price" ? "−" : "+"}</span>
+                  Price Range<span>{isPriceOpen ? "−" : "+"}</span>
                 </h3>
                 <div
                   className={
-                    isSetDisplay === "price"
+                    isPriceOpen
                       ? "category-list price-filter showCategory"
                       : "category-list price-filter"
                   }
@@ -236,6 +293,7 @@ export default function ShopSecondSection() {
                         const value = Number(e.target.value);
                         if (value <= maxPrice) {
                           setMinPrice(value);
+                          setCurrentPage(1);
                         }
                       }}
                       aria-label="min-price"
@@ -250,6 +308,7 @@ export default function ShopSecondSection() {
                         const value = Number(e.target.value);
                         if (value >= minPrice) {
                           setMaxPrice(value);
+                          setCurrentPage(1);
                         }
                       }}
                       aria-label="max-price"
@@ -261,13 +320,13 @@ export default function ShopSecondSection() {
               <li className="left-category">
                 <h3
                   className="category-title"
-                  onClick={() => filterDisplay("colors")}
+                  onClick={() => setIsColorOpen((prev) => !prev)}
                 >
-                  Color<span>{isSetDisplay === "colors" ? "−" : "+"}</span>
+                  Color<span>{isColorOpen ? "−" : "+"}</span>
                 </h3>
                 <div
                   className={
-                    isSetDisplay === "colors"
+                    isColorOpen
                       ? "category-list color-category showCategory"
                       : "category-list color-category"
                   }
@@ -312,10 +371,17 @@ export default function ShopSecondSection() {
             <Link to="/contact">Learn More →</Link>
           </div>
         </div>
+
         <div className="right-con">
           <div className="right-top-con">
             <div className="mobile-filter">
-              <button className="filter-btn">Filter</button>
+              <button
+                className="filter-btn"
+                onClick={() => setMobileFilter((prev) => !prev)}
+                ref={filterButtonRef}
+              >
+                Filter
+              </button>
             </div>
             <div className="right-top-con-header">
               <span>
@@ -325,9 +391,34 @@ export default function ShopSecondSection() {
                 </span>
                 –
                 <span className="end-flower-count-per-page">{displayEnd} </span>
-                of <span className="total-fowers">{products.length}</span>{" "}
+                of{" "}
+                <span className="total-fowers">
+                  {filteredProducts.length}
+                </span>{" "}
                 results
               </span>
+            </div>
+            <div className="active-filters">
+              {
+                <span className="active-filter">
+                  Bouquets: {capitalizeFirst(selectedCategory)}
+                </span>
+              }
+              {
+                <span className="active-filter">
+                  Occasion: {capitalizeFirst(selectedOccasion)}
+                </span>
+              }
+              {
+                <span className="active-filter">
+                  Price: ${minPrice} - ${maxPrice}
+                </span>
+              }
+              {
+                <span className="active-filter">
+                  Color: {capitalizeFirst(selectedColor)}
+                </span>
+              }
             </div>
           </div>
           <div className="bouquet-con">
@@ -338,7 +429,6 @@ export default function ShopSecondSection() {
                 {filteredProducts.length === 0 ? (
                   <div className="no-products">
                     <p>No bouquets match your selected filters.</p>
-
                     <button
                       type="button"
                       className="no-bouquet-reset-btn"

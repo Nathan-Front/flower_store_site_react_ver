@@ -203,6 +203,7 @@
     width: 100%;
     background-color: transparent;
     border: 1px solid #a64b66;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.35);
     border-radius: 0.5rem;
     padding: 4px;
     font-size: clamp(1rem, 1.3vw, 1.6rem);
@@ -287,7 +288,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 16px;
     padding: 16px 0 32px 0;
+}
+.active-filters {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+}
+.active-filters> span {
+    border: 1px solid gray;
+    padding: 4px 6px;
+
 }
 /*Bouquet list*/
 .bouquet-con {
@@ -536,6 +550,9 @@
     .checkmark  {
         padding: 0.2rem 0.4rem;
     }
+    .right-top-con {
+        flex-direction: row;
+    }
     .right-top-con div:nth-child(odd) {
         display: flex;
         justify-content: center;
@@ -556,7 +573,7 @@
         transform: translateY(100px);
         transition:opacity .3s ease,transform .3s ease;
     }
-    .left-con.show-filters {
+    .show-filters {
         z-index: 3;
         opacity: 1;
         transform: translateY(0);
@@ -587,9 +604,11 @@
         margin: 0;
         gap: 0;
     }
-
     .mobile-filter {
         display: flex;
+    }
+    .active-filters {
+        display: none !important;
     }
     .filter-btn {
         padding: 0.4rem 0.8rem;
