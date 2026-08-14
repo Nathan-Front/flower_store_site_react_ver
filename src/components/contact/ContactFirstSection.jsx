@@ -1,0 +1,32 @@
+import "./contactFirstSection.css";
+
+export default function ContactFirstSection() {
+  return (
+    <>
+      <section className="contact-first-sec">
+        <h2>
+          We're Here <span>To Help</span>
+        </h2>
+        <div className="contact-banner-divider">
+          <img
+            src="./images/about/firstSection/shop-heart.svg"
+            alt="heart-icon"
+          />
+        </div>
+        <p>
+          From orders and delivery to floral care and returns, we've got you
+          covered. Find the support you need or get in touch with our team.
+        </p>
+        <a href="mailto:hello@bloomandblossom.com?subject=Flos%20%26%20Florere%20Inquiry">
+          <img src="./images/contact/mail-svgrepo.svg" alt="mail-icon" />
+          Contact Us
+        </a>
+        <img
+          src="./images/contact/contact-banner.png"
+          alt="contact-banner-image"
+          className="contact-banner"
+        />
+      </section>
+    </>
+  );
+}

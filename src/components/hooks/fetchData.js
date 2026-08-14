@@ -1,5 +1,5 @@
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbzUZEJx5H-a27LkZVEgmKgACzZdhYfdFVqIYVIxrhW2OQ1Fw-VolC9d5BWUeuJjZgn7/exec";
+  "https://script.google.com/macros/s/AKfycbyvwjZQ_-ToYpBBMpA799Zf2OMPPhkyykjKRlR5WW1XaIPTTwVoN4EUEzlB2LXkkfkF/exec";
 export async function fetchSpecificSheet(sheetType, key, dataFormatter) {
   try {
     const response = await fetch(`${API_URL}?type=${sheetType}`); //send type to just fetch related files only

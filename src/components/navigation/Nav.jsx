@@ -20,7 +20,7 @@ export default function Nav() {
             <Link to="/about">About</Link>
           </li>
           <li>
-            <Link to="./contact.html">Contact</Link>
+            <Link to="/contact">Contact</Link>
           </li>
         </ul>
         <button className="cart-button">
