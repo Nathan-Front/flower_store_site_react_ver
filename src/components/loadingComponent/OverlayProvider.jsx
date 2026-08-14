@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { OverlayContext } from "./OverlayContext";
-import Overlay from "./Overlay";
+import { OverlayContext } from "./OverlayContext.jsx";
+import Overlay from "./Overlay.jsx";
 export default function OverlayProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [spinner, setSpinner] = useState(null);

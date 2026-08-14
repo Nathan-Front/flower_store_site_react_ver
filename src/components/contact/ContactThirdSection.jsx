@@ -4,6 +4,9 @@ import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import useSectionIntersection from "../hooks/intersection.js";
 import { Fragment } from "react";
+import { useState, useContext } from "react";
+import { validateEmail } from "../../script/emailValidator.js";
+import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 
 export default function ContactThirdSection() {
   const { sectionRef, showSection } = useSectionIntersection();
@@ -19,6 +22,74 @@ export default function ContactThirdSection() {
   } = useFetch("contactMedia", "contactMedia");
   const loading = getInTouchLoading || socialMediaLoading;
   const error = getInTouchError || socialMediarError;
+
+  const initialForm = {
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+    _honey: "",
+  };
+  const [emailError, setEmailError] = useState(false); //for emailvalidator error display
+  const [isInput, setIsInput] = useState(initialForm);
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setIsInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setEmailError(false);
+  };
+
+  const { setIsOpen, setSpinner } = useContext(OverlayContext); //lets a component read the values that the Provider supplied
+  const messageUsHandler = async (e) => {
+    e.preventDefault();
+    if (isInput._honey) {
+      console.log("Bot detected");
+      return;
+    }
+    const isEmail = validateEmail(isInput.email);
+    if (!isEmail) {
+      alert("Please input correct email format.");
+      setEmailError(true);
+      return;
+    }
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbyvwjZQ_-ToYpBBMpA799Zf2OMPPhkyykjKRlR5WW1XaIPTTwVoN4EUEzlB2LXkkfkF/exec";
+    const params = {
+      formType: "message",
+      name: isInput.name,
+      email: isInput.email,
+      phone: isInput.phone,
+      subject: isInput.subject,
+      message: isInput.message,
+    };
+
+    setIsOpen(true);
+    setSpinner("loading");
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const result = await response.json();
+      if (result.success) {
+        alert("Message sent!");
+        setIsInput(initialForm);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsOpen(false);
+      setSpinner(null);
+      setEmailError(false);
+    }
+  };
 
   return (
     <>
@@ -78,7 +149,11 @@ export default function ContactThirdSection() {
                 alt="heart-icon"
               />
             </div>
-            <form id="get-in-touch" className="contact-form">
+            <form
+              id="get-in-touch"
+              className="contact-form"
+              onSubmit={messageUsHandler}
+            >
               <input type="hidden" name="formType" value="message" />
               <div>
                 <img
@@ -92,6 +167,8 @@ export default function ContactThirdSection() {
                   id="name"
                   placeholder="Your Name"
                   required
+                  onChange={inputHandler}
+                  value={isInput.name}
                 />
               </div>
               <div>
@@ -106,6 +183,9 @@ export default function ContactThirdSection() {
                   id="email"
                   placeholder="Your Email Address"
                   required
+                  onChange={inputHandler}
+                  value={isInput.email}
+                  className={emailError ? "error" : ""}
                 />
               </div>
               <div>
@@ -120,6 +200,8 @@ export default function ContactThirdSection() {
                   id="phone"
                   placeholder="Phone Number"
                   required
+                  onChange={inputHandler}
+                  value={isInput.phone}
                 />
               </div>
               <div>
@@ -134,6 +216,8 @@ export default function ContactThirdSection() {
                   id="subject"
                   placeholder="Subject"
                   required
+                  onChange={inputHandler}
+                  value={isInput.subject}
                 />
               </div>
               <div>
@@ -147,6 +231,8 @@ export default function ContactThirdSection() {
                   placeholder="Your Message"
                   id="message"
                   required
+                  onChange={inputHandler}
+                  value={isInput.message}
                 ></textarea>
               </div>
               <label htmlFor="website" className="visually-hidden">
@@ -158,6 +244,8 @@ export default function ContactThirdSection() {
                 name="website"
                 id="website"
                 className="honeypot"
+                onChange={inputHandler}
+                value={isInput._honey}
               />
               <button type="submit" className="send-button">
                 <span className="send-btn-text">Send</span>

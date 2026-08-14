@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 export default function Footer() {
   const initialForm = { email: "", _honey: "" };
+  const [emailError, setEmailError] = useState(false); //for emailvalidator error display
   const [isInput, setIsInput] = useState(initialForm);
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -11,6 +12,7 @@ export default function Footer() {
       ...prev,
       [name]: value,
     }));
+    setEmailError(false);
   };
   const { setIsOpen, setSpinner } = useContext(OverlayContext); //overlay and spinner
 
@@ -22,7 +24,8 @@ export default function Footer() {
     }
     const result = validateEmail(isInput.email);
     if (!result) {
-      //setIsError(true);
+      alert("Please input correct email format.");
+      setEmailError(true);
       return;
     }
 
@@ -57,6 +60,7 @@ export default function Footer() {
     } finally {
       setIsOpen(false);
       setSpinner(null);
+      setEmailError(false);
     }
   };
 
@@ -150,6 +154,7 @@ export default function Footer() {
                 aria-label="Email address"
                 onChange={inputHandler}
                 value={isInput.email}
+                className={emailError ? "error" : ""}
               />
               <input
                 type="text"
