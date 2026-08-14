@@ -4,6 +4,7 @@ import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import useSectionIntersection from "../hooks/intersection.js";
 import { Fragment } from "react";
+import { useState } from "react";
 
 export default function ContactSecondSection() {
   const { sectionRef, showSection } = useSectionIntersection();
@@ -21,6 +22,12 @@ export default function ContactSecondSection() {
 
   const loading = contactUpperLoading || cardContentLoading;
   const error = contactUpperError || cardContentError;
+
+  //Accordion
+  const [openAnswer, setOpenAnswer] = useState(null);
+  const handleFAQToggle = (index) => {
+    setOpenAnswer((current) => (current === index ? null : index));
+  };
 
   return (
     <>
@@ -90,10 +97,15 @@ export default function ContactSecondSection() {
                       {content.ContentType === "faq" && (
                         <div className="accordion-card">
                           <div className="accordion-list">
-                            <div className="accordion-question">
+                            <div
+                              className="accordion-question"
+                              onClick={() => handleFAQToggle(index)}
+                            >
                               <p>{content.QuestionText}</p>
                             </div>
-                            <div className="accordion-answer">
+                            <div
+                              className={`accordion-answer ${openAnswer === index ? "FAQopen" : ""}`}
+                            >
                               <p>{content.AnswerSubtext}</p>
                             </div>
                           </div>

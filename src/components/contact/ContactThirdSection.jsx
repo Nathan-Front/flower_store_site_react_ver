@@ -4,6 +4,7 @@ import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import useSectionIntersection from "../hooks/intersection.js";
 import { Fragment } from "react";
+
 export default function ContactThirdSection() {
   const { sectionRef, showSection } = useSectionIntersection();
   const {
@@ -18,6 +19,7 @@ export default function ContactThirdSection() {
   } = useFetch("contactMedia", "contactMedia");
   const loading = getInTouchLoading || socialMediaLoading;
   const error = getInTouchError || socialMediarError;
+
   return (
     <>
       <section
@@ -147,7 +149,7 @@ export default function ContactThirdSection() {
                   required
                 ></textarea>
               </div>
-              <label for="website" className="visually-hidden">
+              <label htmlFor="website" className="visually-hidden">
                 {" "}
                 Website{" "}
               </label>

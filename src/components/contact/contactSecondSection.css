@@ -185,12 +185,18 @@
     padding: 4px 0;
 }
 .accordion-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease;
     margin: 0;
     line-height: 1.7;
     background-color: rgba(255, 253, 251, 0.35);
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s ease;
+}
+.accordion-answer p {
+  overflow: hidden;
+}
+.accordion-answer.FAQopen {
+  grid-template-rows: 1fr;
 }
 /*Fifth card*/
 .contact-card-list-con li:last-child {
