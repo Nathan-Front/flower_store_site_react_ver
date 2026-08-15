@@ -38,7 +38,7 @@ export default function ShopSecondSection() {
         })),
     }));
   }, [products, modalImages]);
-  console.log("data combined", shopProducts);
+  //console.log("data combined", shopProducts);
   const fieldsetContents = [
     {
       title: "Bouquets",
@@ -204,8 +204,8 @@ export default function ShopSecondSection() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setIsOpen } = useContext(OverlayContext); //overlay and spinner
-  const modalClickHandler = (productData) => {
-    setSelectedProduct(productData);
+  const modalClickHandler = (item) => {
+    setSelectedProduct(item);
     setIsModalOpen(true);
     setIsOpen(true);
   };
@@ -548,9 +548,11 @@ export default function ShopSecondSection() {
       </section>
       {selectedProduct && (
         <AddToCartModal
+          key={selectedProduct.no} //use to differentiate each modals are different
           modalOpen={isModalOpen}
           setModalOpen={setIsModalOpen}
-          product={selectedProduct}
+          clickedProduct={selectedProduct}
+          shopProducts={shopProducts}
         />
       )}
     </>

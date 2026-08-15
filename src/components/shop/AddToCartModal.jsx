@@ -2,8 +2,60 @@ import "./shopSecondSection.css";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { useContext } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
-function AddToCartModal({ modalOpen, setModalOpen, product }) {
+import { useState } from "react";
+
+function AddToCartModal({
+  modalOpen,
+  setModalOpen,
+  clickedProduct,
+  shopProducts,
+}) {
   const { setIsOpen } = useContext(OverlayContext); //overlay and spinner
+  //hover change image
+  const [mainImage, setMainImage] = useState(clickedProduct.image);
+
+  const [isQuantity, setIsQuantity] = useState(1);
+  //increase/decrease quantity
+  const addMinusClickHandler = (btn) => {
+    if (btn === "add") {
+      setIsQuantity((prev) => prev + 1);
+    }
+    if (btn == "minus") {
+      setIsQuantity((prev) => Math.max(0, prev - 1));
+    }
+  };
+  //Add temporary storage
+  const addToTemporaryCart = () => {
+    //Search selected product from list
+    const selectedProduct = shopProducts.find(
+      (item) => Number(item.no) === Number(clickedProduct.no),
+    );
+
+    const tempCart = JSON.parse(localStorage.getItem("temporaryCart")) || [];
+    //Find existing product in temporary cart
+    const itemExisting = tempCart.find(
+      (cartItem) => cartItem.item.no === Number(clickedProduct.no),
+    );
+    if (isQuantity === 0) {
+      alert("Input quantity.");
+      return;
+    }
+    if (itemExisting) {
+      itemExisting.quantity += isQuantity;
+      alert("Item already in the cart.\nAdded quantity");
+    } else {
+      tempCart.push({
+        item: selectedProduct,
+        quantity: isQuantity,
+      });
+      alert("Item added to cart.");
+    }
+    localStorage.setItem("temporaryCart", JSON.stringify(tempCart));
+    setModalOpen(false);
+    setIsOpen(false);
+    setIsQuantity(1);
+  };
+
   return (
     <>
       <aside className={`aside-con ${modalOpen ? "showModal" : ""}`}>
@@ -19,35 +71,52 @@ function AddToCartModal({ modalOpen, setModalOpen, product }) {
         </button>
         <div className="aside-product-image">
           <div className="aside-main-img">
-            <img src={product.image} alt={product.imageAlt} />
+            <img src={mainImage} alt={clickedProduct.imageAlt} />
           </div>
           <ul className="aside-sub-img">
-            {product.modal.map((icon) => (
+            {clickedProduct.modal.map((icon) => (
               <li className="modal-icons" key={icon.no}>
-                <img src={icon.icon} alt={icon.iconAlt} />
+                <img
+                  src={icon.icon}
+                  alt={icon.iconAlt}
+                  onMouseEnter={() => setMainImage(icon.icon)}
+                  onMouseLeave={() => setMainImage(clickedProduct.image)}
+                />
               </li>
             ))}
           </ul>
         </div>
         <div className="aside-product-details">
-          <span className="aside-product-title">{product.product}</span>
+          <span className="aside-product-title">{clickedProduct.product}</span>
           <div className="product-rating-modal">
-            {displayProductRating(product)}
+            {displayProductRating(clickedProduct)}
           </div>
-          <span className="aside-product-price">{product.price}</span>
-          <p className="aside-product-detail">{product.description}</p>
+          <span className="aside-product-price">{clickedProduct.price}</span>
+          <p className="aside-product-detail">{clickedProduct.description}</p>
           <div className="quantity-con">
             <span>Quantity:</span>
             <div className="add-minus-con">
-              <button id="minus-qty-btn">−</button>
+              <button
+                id="minus-qty-btn"
+                onClick={() => addMinusClickHandler("minus")}
+              >
+                −
+              </button>
               <div className="qty-display-con">
-                <span className="qty-display">0</span>
+                <span className="qty-display">{isQuantity}</span>
               </div>
-              <button id="add-qty-btn">+</button>
+              <button
+                id="add-qty-btn"
+                onClick={() => addMinusClickHandler("add")}
+              >
+                +
+              </button>
             </div>
           </div>
           <div className="add-buy-con">
-            <button id="add-to-cart">Add To Cart</button>
+            <button id="add-to-cart" onClick={() => addToTemporaryCart()}>
+              Add To Cart
+            </button>
             <button id="buy-now">Buy Now</button>
           </div>
           <ul className="modal-footer">
