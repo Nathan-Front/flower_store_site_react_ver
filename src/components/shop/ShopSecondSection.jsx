@@ -7,15 +7,38 @@ import { getProductBadge } from "../hooks/productBadge.js";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { getCardsPerPage } from "../hooks/viewportPage.js";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import AddToCartModal from "./AddToCartModal.jsx";
+import { useContext } from "react";
+import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
+
 export default function ShopSecondSection() {
   const {
     data: products, //rename the data and render its contents
-    loading,
-    error,
+    loading: productLoading,
+    error: productError,
   } = useFetch("products", "products", formatProducts);
-
+  const {
+    data: modalImages,
+    loading: imageLoading,
+    error: imageError,
+  } = useFetch("products", "productImages");
+  const shopProducts = useMemo(() => {
+    if (!products || !modalImages) return []; //useFetch might initially return null so add this
+    //combiine the two fetched data into a single array
+    return products.map((product) => ({
+      ...product,
+      modal: modalImages
+        .filter((img) => Number(img.productId) === Number(product.no))
+        .map((img) => ({
+          no: Number(img.order),
+          icon: img.image,
+          iconAlt: img.alt,
+        })),
+    }));
+  }, [products, modalImages]);
+  console.log("data combined", shopProducts);
   const fieldsetContents = [
     {
       title: "Bouquets",
@@ -82,7 +105,7 @@ export default function ShopSecondSection() {
   const [selectedCategory, setSelectedCategory] = useState("all-bouquets");
   const [selectedColor, setSelectedColor] = useState("all-color");
 
-  const filteredProducts = products.filter((item) => {
+  const filteredProducts = shopProducts.filter((item) => {
     const categoryMatch =
       selectedCategory === "all-bouquets" || item.category === selectedCategory; //category from data formatter
 
@@ -176,6 +199,16 @@ export default function ShopSecondSection() {
       document.removeEventListener("mousedown", outsideClickHandler);
     };
   }, [mobileFilter]);
+
+  //add to cart modal
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { setIsOpen } = useContext(OverlayContext); //overlay and spinner
+  const modalClickHandler = (productData) => {
+    setSelectedProduct(productData);
+    setIsModalOpen(true);
+    setIsOpen(true);
+  };
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -422,9 +455,9 @@ export default function ShopSecondSection() {
             </div>
           </div>
           <div className="bouquet-con">
-            {loading && <LoadingSpinner />}
-            {error && <LoadingError />}
-            {!loading && !error && (
+            {productLoading && imageLoading && <LoadingSpinner />}
+            {productError && imageError && <LoadingError />}
+            {!productLoading && !productError && (
               <ul className="flower-grid">
                 {filteredProducts.length === 0 ? (
                   <div className="no-products">
@@ -477,7 +510,11 @@ export default function ShopSecondSection() {
                             <span className="flower-price">
                               {formatPrice(item.price)}
                             </span>
-                            <button className="cart-btn">
+
+                            <button
+                              className="cart-btn"
+                              onClick={() => modalClickHandler(item)}
+                            >
                               <i className="fa-solid fa-cart-shopping cart-icon"></i>
                               <span>Add To Cart</span>
                             </button>
@@ -509,6 +546,13 @@ export default function ShopSecondSection() {
           </div>
         </div>
       </section>
+      {selectedProduct && (
+        <AddToCartModal
+          modalOpen={isModalOpen}
+          setModalOpen={setIsModalOpen}
+          product={selectedProduct}
+        />
+      )}
     </>
   );
 }

@@ -743,7 +743,7 @@ nav {
     opacity: 0;
     visibility: hidden;
     transition: opacity .3s ease, visibility .3s ease;
-    z-index: 9999;
+    z-index: 999;
 }
 .loading-overlay.show-loading {
     opacity: 1;

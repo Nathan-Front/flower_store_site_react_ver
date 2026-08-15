@@ -723,17 +723,15 @@
     background-color: white;
     box-shadow: 0px 8px 14px rgba(0, 0, 0, 0.35);
     border-radius: 0.5rem;
-    z-index: 99;
+    z-index: 9999;
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
 }
 .aside-con.showModal {
     opacity: 1;
     transform: translate(-50%, -50%);
-}
-.aside-con.hideModal {
-    opacity: 0;
-    transform: translate(-50%, -40%);
+    pointer-events: auto;
 }
 .close-modal-btn {
     position: absolute;

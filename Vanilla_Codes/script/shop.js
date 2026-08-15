@@ -455,8 +455,6 @@ function renderSelectedProduct() {
 
   addToCartBtn.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const product = btn.closest("li");
-      const img = product.closest("li").querySelector("img");
       const productName = product.closest("li").querySelector(".product-name");
       const productRate = product
         .closest("li")
@@ -467,8 +465,10 @@ function renderSelectedProduct() {
         .querySelector(".product-description p");
       const asideCon = document.createElement("aside");
       asideCon.classList = "aside-con";
+      const product = btn.closest("li");
+      const img = product.closest("li").querySelector("img");
       const id = Number(product.dataset.id);
-      console.log("id of product", id);
+
       const selectedProduct = shopProducts.find((item) => item.no === id);
       asideCon.innerHTML = `
             <button type="button" class="close-modal-btn">Close</button>
