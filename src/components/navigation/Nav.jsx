@@ -1,5 +1,15 @@
 import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { OverlayContext } from "../loadingComponent/OverlayContext";
+import Cart from "../cart/Cart";
 export default function Nav() {
+  const [cartOpen, setCartOpen] = useState(false);
+  const { setIsOpen } = useContext(OverlayContext);
+
+  const openCartHandler = () => {
+    setCartOpen(true);
+    setIsOpen(true);
+  };
   return (
     <>
       <nav>
@@ -23,7 +33,7 @@ export default function Nav() {
             <Link to="/contact">Contact</Link>
           </li>
         </ul>
-        <button className="cart-button">
+        <button className="cart-button" onClick={() => openCartHandler()}>
           <i className="fa-solid fa-cart-shopping"></i>
           <span className="cart-count">0</span>
         </button>
@@ -31,6 +41,11 @@ export default function Nav() {
           <i className="fa-solid fa-bars" id="menu-icon"></i>
         </button>
       </nav>
+      <Cart
+        cartOpen={cartOpen}
+        setCartOpen={setCartOpen}
+        setIsOpen={setIsOpen}
+      />
     </>
   );
 }

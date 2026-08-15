@@ -1,8 +1,7 @@
 import "./shopSecondSection.css";
 import { displayProductRating } from "../hooks/productRating.jsx";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
-import { useState } from "react";
 
 function AddToCartModal({
   modalOpen,

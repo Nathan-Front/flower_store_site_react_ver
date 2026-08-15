@@ -534,10 +534,10 @@ nav {
     transition: 0.4s ease;
     display: flex;
     flex-direction: column;
+    z-index: 9999;
 }
 .cart-modal-aside.cartModal {
-    transform: translate(0);
-    z-index: 9999;
+    transform: translateX(0);
 }
 .cart-header {
     display: flex;
