@@ -1,7 +1,6 @@
 import "../../index.css";
-import Nav from "../navigation/Nav.jsx";
-import { useState } from "react";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
+import { CartCount } from "../hooks/cartCount.js";
 export default function Cart({
   cartOpen,
   setCartOpen,
@@ -14,9 +13,6 @@ export default function Cart({
     setIsOpen(false);
   };
 
-  //use state to store the temporary storage. makes every update to related components
-  const [cartStorage, setCartStorage] = useState(cartItems);
-
   const increaseQtyHandler = (productId) => {
     const updatedCart = cartItems.map((cartItem) => {
       if (Number(cartItem.item.no) === Number(productId)) {
@@ -27,7 +23,6 @@ export default function Cart({
       }
       return cartItem;
     });
-    localStorage.setItem("temporaryCart", JSON.stringify(updatedCart));
     updateCart(updatedCart);
     return updatedCart;
   };
@@ -41,7 +36,6 @@ export default function Cart({
       }
       return cartItem;
     });
-    localStorage.setItem("temporaryCart", JSON.stringify(updatedCart));
     updateCart(updatedCart);
     return updatedCart;
   };
@@ -50,8 +44,7 @@ export default function Cart({
     (total, product) => total + product.item.price * product.quantity,
     0,
   );
-
-  let totalQty = cartItems.reduce((total, item) => total + item.quantity, 0);
+  let cartCnt = CartCount(cartItems); //pass to calculate total
 
   return (
     <>
@@ -76,7 +69,7 @@ export default function Cart({
               <p>
                 Your cart content (
                 <span className="cart-modal-counter">
-                  {totalQty} item{totalQty > 1 ? "s" : ""}
+                  {cartCnt} item{cartCnt > 1 ? "s" : ""}
                 </span>
                 )
               </p>

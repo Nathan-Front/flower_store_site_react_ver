@@ -34,7 +34,6 @@ function AddToCartModal({
       (item) => Number(item.no) === Number(clickedProduct.no),
     );
 
-    /*  const tempCart = JSON.parse(localStorage.getItem("temporaryCart")) || []; */
     //Find existing product in temporary cart
     const itemExisting = cartItems.find(
       (cartItem) => Number(cartItem.item.no) === Number(clickedProduct.no),
