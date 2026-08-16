@@ -14,6 +14,7 @@ export default function Cart({
   };
   //increase quantity
   const increaseQtyHandler = (productId) => {
+    //map again to look for the product from list
     const updatedCart = cartItems.map((cartItem) => {
       if (Number(cartItem.item.no) === Number(productId)) {
         return {
@@ -28,6 +29,7 @@ export default function Cart({
   };
   //decrease quantity
   const decreaseQtyHandler = (productId) => {
+    //map again to look for the product from list
     const updatedCart = cartItems.map((cartItem) => {
       if (Number(cartItem.item.no) === Number(productId)) {
         return {
@@ -47,11 +49,12 @@ export default function Cart({
     );
     updateCart(updatedStorage);
   };
-
+  //display total item for cart modal
   const totalPayment = cartItems.reduce(
     (total, product) => total + product.item.price * product.quantity,
     0,
   );
+  //display total item for Nav
   let cartCnt = CartCount(cartItems); //pass to calculate total
 
   return (
@@ -83,7 +86,7 @@ export default function Cart({
               </p>
               <ul className="added-items-container">
                 {cartItems.map((product) => (
-                  <li data-product-id={product.item.no} key={product.item.no}>
+                  <li key={product.item.no}>
                     <div className="product-details-con">
                       <div className="cart-product-image">
                         <img

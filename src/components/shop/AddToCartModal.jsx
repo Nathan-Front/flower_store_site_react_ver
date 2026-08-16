@@ -11,8 +11,6 @@ function AddToCartModal({
   cartItems,
   updateCart,
 }) {
-  console.log("cartItems:", cartItems);
-  console.log("clickedProduct:", clickedProduct);
   const { setIsOpen } = useContext(OverlayContext); //overlay and spinner
   //hover change image
   const [mainImage, setMainImage] = useState(clickedProduct.image);
@@ -43,11 +41,21 @@ function AddToCartModal({
       alert("Input quantity.");
       return;
     }
+    let updatedCart; //need this outside the if statement to be able to pass the state of count
     if (itemExisting) {
-      itemExisting.quantity += isQuantity;
+      //map again to look for the product from list
+      updatedCart = cartItems.map((cartItem) => {
+        if (Number(cartItem.item.no) === Number(clickedProduct.no)) {
+          return {
+            ...cartItem,
+            quantity: itemExisting.quantity + isQuantity,
+          };
+        }
+        return cartItem;
+      });
       alert("Item already in the cart.\nAdded quantity");
     } else {
-      const updatedCart = [
+      updatedCart = [
         ...cartItems,
         {
           item: selectedProduct,
@@ -55,8 +63,25 @@ function AddToCartModal({
         },
       ];
       alert("Item added to cart.");
-      updateCart(updatedCart);
     }
+    updateCart(updatedCart);
+    setModalOpen(false);
+    setIsOpen(false);
+    setIsQuantity(1);
+  };
+  const buyNowHandler = () => {
+    //Search selected product from list
+    const selectedProduct = shopProducts.find(
+      (item) => Number(item.no) === Number(clickedProduct.no),
+    );
+    //replace any item if there are in the storage
+    const buyNow = [
+      {
+        item: selectedProduct,
+        quantity: isQuantity,
+      },
+    ];
+    localStorage.setItem("buyNowItem", JSON.stringify(buyNow));
     setModalOpen(false);
     setIsOpen(false);
     setIsQuantity(1);
@@ -123,7 +148,9 @@ function AddToCartModal({
             <button id="add-to-cart" onClick={() => addToTemporaryCart()}>
               Add To Cart
             </button>
-            <button id="buy-now">Buy Now</button>
+            <button id="buy-now" onClick={() => buyNowHandler()}>
+              Buy Now
+            </button>
           </div>
           <ul className="modal-footer">
             <li>
