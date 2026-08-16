@@ -5,6 +5,7 @@ import { formatBestSellers } from "../hooks/dataFormatter.js";
 import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import useSectionIntersection from "../hooks/intersection.js";
+import { useNavigate } from "react-router-dom";
 export default function IndexSecondSection() {
   const {
     data: bestSellers, //rename the data and render its contents
@@ -17,6 +18,7 @@ export default function IndexSecondSection() {
   );
   //console.log("best sellers", bestSeller); //for debugging only
   const { sectionRef, showSection } = useSectionIntersection();
+  const navigate = useNavigate();
   return (
     <>
       <section className="index-second-sec">
@@ -104,6 +106,11 @@ export default function IndexSecondSection() {
                         aria-label="Add to cart"
                         className="add-to-cart-best-seller"
                         data-product-id={item.no}
+                        onClick={() => {
+                          navigate(
+                            `/shop?product=${encodeURIComponent(item.no)}`,
+                          );
+                        }}
                       >
                         <i className="fa-solid fa-cart-shopping"></i>
                         Add to Cart →

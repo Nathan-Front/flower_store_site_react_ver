@@ -7,7 +7,7 @@ import { getProductBadge } from "../hooks/productBadge.js";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { getCardsPerPage } from "../hooks/viewportPage.js";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AddToCartModal from "./AddToCartModal.jsx";
 import { useContext } from "react";
@@ -38,7 +38,7 @@ export default function ShopSecondSection({ cartItems, updateCart }) {
         })),
     }));
   }, [products, modalImages]);
-  //console.log("data combined", shopProducts);
+
   const fieldsetContents = [
     {
       title: "Bouquets",
@@ -209,6 +209,22 @@ export default function ShopSecondSection({ cartItems, updateCart }) {
     setIsModalOpen(true);
     setIsOpen(true);
   };
+
+  //best seller function from home page
+  const productIdFromURL = searchParams.get("product");
+  useEffect(() => {
+    if (!productIdFromURL || !shopProducts.length) return;
+
+    const productFromURL = shopProducts.find(
+      (item) => Number(item.no) === Number(productIdFromURL),
+    );
+    if (!productFromURL) return;
+
+    const timer = setTimeout(() => {
+      modalClickHandler(productFromURL);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [productIdFromURL, shopProducts, searchParams, setSearchParams]);
   return (
     <>
       <section className="shop-second-sec" ref={shopSectionRef}>
@@ -551,6 +567,7 @@ export default function ShopSecondSection({ cartItems, updateCart }) {
           key={selectedProduct.no} //use to differentiate each modals are different
           modalOpen={isModalOpen}
           setModalOpen={setIsModalOpen}
+          setSearchParams={setSearchParams}
           clickedProduct={selectedProduct}
           shopProducts={shopProducts}
           cartItems={cartItems}

@@ -6,6 +6,7 @@ import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 function AddToCartModal({
   modalOpen,
   setModalOpen,
+  setSearchParams,
   clickedProduct,
   shopProducts,
   cartItems,
@@ -96,6 +97,7 @@ function AddToCartModal({
           onClick={() => {
             setModalOpen(false);
             setIsOpen(false);
+            setSearchParams({});
           }}
         >
           Close

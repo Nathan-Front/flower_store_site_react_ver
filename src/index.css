@@ -391,9 +391,6 @@ nav {
     color: #c48b71;
     font-size: 13px;
 }
-.no-scroll {
-    overflow: hidden;
-}
 #subscribe.error {
     border: 2px solid #ff4d4d;
 }
