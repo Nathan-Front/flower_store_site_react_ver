@@ -8,7 +8,11 @@ function AddToCartModal({
   setModalOpen,
   clickedProduct,
   shopProducts,
+  cartItems,
+  updateCart,
 }) {
+  console.log("cartItems:", cartItems);
+  console.log("clickedProduct:", clickedProduct);
   const { setIsOpen } = useContext(OverlayContext); //overlay and spinner
   //hover change image
   const [mainImage, setMainImage] = useState(clickedProduct.image);
@@ -30,11 +34,12 @@ function AddToCartModal({
       (item) => Number(item.no) === Number(clickedProduct.no),
     );
 
-    const tempCart = JSON.parse(localStorage.getItem("temporaryCart")) || [];
+    /*  const tempCart = JSON.parse(localStorage.getItem("temporaryCart")) || []; */
     //Find existing product in temporary cart
-    const itemExisting = tempCart.find(
-      (cartItem) => cartItem.item.no === Number(clickedProduct.no),
+    const itemExisting = cartItems.find(
+      (cartItem) => Number(cartItem.item.no) === Number(clickedProduct.no),
     );
+
     if (isQuantity === 0) {
       alert("Input quantity.");
       return;
@@ -43,13 +48,16 @@ function AddToCartModal({
       itemExisting.quantity += isQuantity;
       alert("Item already in the cart.\nAdded quantity");
     } else {
-      tempCart.push({
-        item: selectedProduct,
-        quantity: isQuantity,
-      });
+      const updatedCart = [
+        ...cartItems,
+        {
+          item: selectedProduct,
+          quantity: isQuantity,
+        },
+      ];
       alert("Item added to cart.");
+      updateCart(updatedCart);
     }
-    localStorage.setItem("temporaryCart", JSON.stringify(tempCart));
     setModalOpen(false);
     setIsOpen(false);
     setIsQuantity(1);

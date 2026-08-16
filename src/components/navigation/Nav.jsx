@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useContext } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext";
 import Cart from "../cart/Cart";
-export default function Nav() {
+export default function Nav({ cartItems, updateCart }) {
   const [cartOpen, setCartOpen] = useState(false);
   const { setIsOpen } = useContext(OverlayContext);
 
@@ -10,6 +10,8 @@ export default function Nav() {
     setCartOpen(true);
     setIsOpen(true);
   };
+  let totalQty = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <>
       <nav>
@@ -35,7 +37,7 @@ export default function Nav() {
         </ul>
         <button className="cart-button" onClick={() => openCartHandler()}>
           <i className="fa-solid fa-cart-shopping"></i>
-          <span className="cart-count">0</span>
+          <span className="cart-count">{totalQty}</span>
         </button>
         <button className="menu-btn" aria-label="menu-button">
           <i className="fa-solid fa-bars" id="menu-icon"></i>
@@ -45,6 +47,8 @@ export default function Nav() {
         cartOpen={cartOpen}
         setCartOpen={setCartOpen}
         setIsOpen={setIsOpen}
+        cartItems={cartItems}
+        updateCart={updateCart}
       />
     </>
   );

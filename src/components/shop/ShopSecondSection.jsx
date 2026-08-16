@@ -13,7 +13,7 @@ import AddToCartModal from "./AddToCartModal.jsx";
 import { useContext } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 
-export default function ShopSecondSection() {
+export default function ShopSecondSection({ cartItems, updateCart }) {
   const {
     data: products, //rename the data and render its contents
     loading: productLoading,
@@ -553,6 +553,8 @@ export default function ShopSecondSection() {
           setModalOpen={setIsModalOpen}
           clickedProduct={selectedProduct}
           shopProducts={shopProducts}
+          cartItems={cartItems}
+          updateCart={updateCart}
         />
       )}
     </>

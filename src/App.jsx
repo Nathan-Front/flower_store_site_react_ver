@@ -7,15 +7,27 @@ import Contact from "./components/contact/contact.jsx";
 import ScrollToTop from "./components/hooks/scrollToTop.jsx";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import OverlayProvider from "./components/loadingComponent/OverlayProvider.jsx";
+import { useState } from "react";
 function App() {
+  const [cartItems, setCartItems] = useState(() => {
+    return JSON.parse(localStorage.getItem("temporaryCart")) || [];
+  });
+  const updateCart = (updatedCart) => {
+    localStorage.setItem("temporaryCart", JSON.stringify(updatedCart));
+
+    setCartItems(updatedCart);
+  };
   return (
     <HashRouter>
       <ScrollToTop />
       <OverlayProvider>
-        <Nav />
+        <Nav cartItems={cartItems} updateCart={updateCart} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
+          <Route
+            path="/shop"
+            element={<Shop cartItems={cartItems} updateCart={updateCart} />}
+          />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
