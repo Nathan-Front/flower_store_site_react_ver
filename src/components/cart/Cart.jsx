@@ -12,7 +12,7 @@ export default function Cart({
     setCartOpen(false);
     setIsOpen(false);
   };
-
+  //increase quantity
   const increaseQtyHandler = (productId) => {
     const updatedCart = cartItems.map((cartItem) => {
       if (Number(cartItem.item.no) === Number(productId)) {
@@ -26,6 +26,7 @@ export default function Cart({
     updateCart(updatedCart);
     return updatedCart;
   };
+  //decrease quantity
   const decreaseQtyHandler = (productId) => {
     const updatedCart = cartItems.map((cartItem) => {
       if (Number(cartItem.item.no) === Number(productId)) {
@@ -38,6 +39,13 @@ export default function Cart({
     });
     updateCart(updatedCart);
     return updatedCart;
+  };
+  //delete item
+  const deleteItemHandler = (productId) => {
+    const updatedStorage = cartItems.filter(
+      (selected) => Number(selected.item.no) !== Number(productId),
+    );
+    updateCart(updatedStorage);
   };
 
   const totalPayment = cartItems.reduce(
@@ -107,7 +115,10 @@ export default function Cart({
                           >
                             +
                           </button>
-                          <button className="cart-modal-del-btn">
+                          <button
+                            className="cart-modal-del-btn"
+                            onClick={() => deleteItemHandler(product.item.no)}
+                          >
                             <i className="fa-solid fa-trash"></i>
                           </button>
                         </div>

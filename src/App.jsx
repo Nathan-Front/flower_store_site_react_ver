@@ -9,12 +9,12 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 import OverlayProvider from "./components/loadingComponent/OverlayProvider.jsx";
 import { useState } from "react";
 function App() {
+  //lift up state of cart count/temporary storage
   const [cartItems, setCartItems] = useState(() => {
     return JSON.parse(localStorage.getItem("temporaryCart")) || [];
   });
   const updateCart = (updatedCart) => {
     localStorage.setItem("temporaryCart", JSON.stringify(updatedCart));
-
     setCartItems(updatedCart);
   };
   return (
