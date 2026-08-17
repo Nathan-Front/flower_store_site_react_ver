@@ -7,7 +7,7 @@ import { getProductBadge } from "../hooks/productBadge.js";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { getCardsPerPage } from "../hooks/viewportPage.js";
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import AddToCartModal from "./AddToCartModal.jsx";
 import { useContext } from "react";

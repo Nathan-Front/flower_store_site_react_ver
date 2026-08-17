@@ -1,6 +1,7 @@
 import "../../index.css";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
 import { CartCount } from "../hooks/cartCount.js";
+import { Link } from "react-router-dom";
 export default function Cart({
   cartOpen,
   setCartOpen,
@@ -139,7 +140,15 @@ export default function Cart({
                 {formatPrice(totalPayment)}
               </span>
             </p>
-            <a href="./cart.html">Proceed to check out</a>
+            <Link
+              to="/checkout"
+              onClick={() => {
+                setCartOpen(false);
+                setIsOpen(false);
+              }}
+            >
+              Proceed to check out
+            </Link>
           </div>
         </div>
       </aside>

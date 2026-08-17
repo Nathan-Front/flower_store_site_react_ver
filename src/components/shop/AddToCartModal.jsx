@@ -2,6 +2,7 @@ import "./shopSecondSection.css";
 import { displayProductRating } from "../hooks/productRating.jsx";
 import { useContext, useState } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 function AddToCartModal({
   modalOpen,
@@ -70,19 +71,31 @@ function AddToCartModal({
     setIsOpen(false);
     setIsQuantity(1);
   };
+  const navigate = useNavigate();
   const buyNowHandler = () => {
     //Search selected product from list
     const selectedProduct = shopProducts.find(
       (item) => Number(item.no) === Number(clickedProduct.no),
     );
+    console.log("clickedProduct:", clickedProduct);
+    console.log("selectedProduct:", selectedProduct);
+    console.log("quantity:", isQuantity);
     //replace any item if there are in the storage
-    const buyNow = [
+    navigate("/checkout", {
+      state: {
+        buyNow: true,
+        item: selectedProduct,
+        quantity: isQuantity,
+      },
+    });
+    /* const buyNow = [
       {
         item: selectedProduct,
         quantity: isQuantity,
       },
     ];
-    localStorage.setItem("buyNowItem", JSON.stringify(buyNow));
+
+    localStorage.setItem("buyNowItem", JSON.stringify(buyNow)); */
     setModalOpen(false);
     setIsOpen(false);
     setIsQuantity(1);

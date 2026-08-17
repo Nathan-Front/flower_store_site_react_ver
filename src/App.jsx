@@ -4,6 +4,7 @@ import Home from "./components/index/home.jsx";
 import Shop from "./components/shop/shop.jsx";
 import About from "./components/about/about.jsx";
 import Contact from "./components/contact/contact.jsx";
+import Checkout from "./components/checkout/checkout.jsx";
 import ScrollToTop from "./components/hooks/scrollToTop.jsx";
 import { Routes, Route, HashRouter } from "react-router-dom";
 import OverlayProvider from "./components/loadingComponent/OverlayProvider.jsx";
@@ -30,6 +31,7 @@ function App() {
           />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Routes>
         <Footer />
       </OverlayProvider>
