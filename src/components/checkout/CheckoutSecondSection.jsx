@@ -1,15 +1,68 @@
 import "./checkoutSecondSection.css";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
+import useFetch from "../hooks/renderFetchData.js";
+import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
+import LoadingError from "../loadingComponent/LoadingError.jsx";
+import { formatCartDisplay } from "../hooks/dataFormatter.js";
+
 export default function CheckoutSecondSection() {
+  const {
+    data: dataSettings, //rename the data and render its contents
+    loading,
+    error,
+  } = useFetch("checkout", "settings", formatCartDisplay);
   const location = useLocation();
   const buyNow = location.state?.buyNow;
   const item = location.state?.item;
   const quantity = location.state?.quantity;
-  const checkoutProducts = buyNow
-    ? [{ ...item, quantity }]
-    : JSON.parse(localStorage.getItem("temporaryCart")) || [];
-  console.log(checkoutProducts);
+  const [checkoutProducts, setCheckoutProducts] = useState([]);
+  useEffect(() => {
+    if (buyNow && quantity) {
+      const timer = setTimeout(() => {
+        setCheckoutProducts([
+          {
+            item: item,
+            quantity: quantity,
+          },
+        ]);
+      }, 0);
+      return () => clearTimeout(timer);
+    } else {
+      const temporaryCart =
+        JSON.parse(localStorage.getItem("temporaryCart")) || [];
+      const timer = setTimeout(() => {
+        setCheckoutProducts(temporaryCart);
+      });
+      return () => clearTimeout(timer);
+    }
+  }, [buyNow, item, quantity]);
+
+  const subTotal = checkoutProducts.reduce(
+    (total, product) => total + product.item.price * product.quantity,
+    0,
+  );
+
+  let grandTotal =
+    dataSettings.length > 0 //render only when data is already fetched
+      ? Number(subTotal) * dataSettings[0].taxRate +
+        Number(subTotal) +
+        dataSettings[0].delFee
+      : 0;
+
+  const handleQuantity = (productNo, change) => {
+    setCheckoutProducts((prevProducts) =>
+      prevProducts.map((item) =>
+        Number(item.item.no) === Number(productNo)
+          ? {
+              ...item,
+              quantity: Math.max(1, Number(item.quantity) + change),
+            }
+          : item,
+      ),
+    );
+  };
   return (
     <>
       <section className="cart-second-sec">
@@ -18,28 +71,38 @@ export default function CheckoutSecondSection() {
           <div className="order-summary-message"></div>
           <ul className="cart-checkout-content">
             {checkoutProducts.map((item) => (
-              <li data-product-id={item.no} key={item.no}>
+              <li key={item.item.no}>
                 <div className="check-product-details-con">
                   <div className="check-cart-product-image">
                     <img
-                      src={item.image}
+                      src={item.item.image}
                       alt="product-item-${product.item.no}"
                     />
                   </div>
                   <div className="check-cart-product-details">
                     <strong>{item.product}</strong>
-                    <span>{formatPrice(item.price)}</span>
+                    <span>{formatPrice(item.item.price)}</span>
                     <div className="check-cart-add-minus-con">
                       <div className="check-quantity-con">
                         <span>Quantity:</span>
                       </div>
-                      <button className="check-cart-minus-qty-btn">−</button>
+                      <button
+                        className="check-cart-minus-qty-btn"
+                        onClick={() => handleQuantity(item.item.no, -1)}
+                      >
+                        −
+                      </button>
                       <div className="check-cart-qty-display-con">
                         <span className="check-cart-qty-display">
                           {item.quantity}
                         </span>
                       </div>
-                      <button className="check-cart-add-qty-btn">+</button>
+                      <button
+                        className="check-cart-add-qty-btn"
+                        onClick={() => handleQuantity(item.item.no, 1)}
+                      >
+                        +
+                      </button>
                       <button className="cart-modal-del-btn">
                         <i className="fa-solid fa-trash"></i>
                       </button>
@@ -49,24 +112,49 @@ export default function CheckoutSecondSection() {
               </li>
             ))}
           </ul>
-          <ul className="totals-con">
-            <li>
-              <span>Subtotal:</span>
-              <span className="sub-total"></span>
-            </li>
-            <li>
-              <span>Delivery Fee:</span>
-              <span className="delivery-fee"></span>
-            </li>
-            <li>
-              <span>Tax Fee:</span>
-              <span className="tax-fee"></span>
-            </li>
-            <li>
-              <span>Total:</span>
-              <span className="grand-total"></span>
-            </li>
-          </ul>
+          {loading && <LoadingSpinner />}
+          {error && <LoadingError />}
+          {!loading && !error && (
+            <ul className="totals-con">
+              <li>
+                <span>Subtotal:</span>
+                <span className="sub-total">
+                  {"$" +
+                    (checkoutProducts.length !== 0
+                      ? subTotal.toFixed(2)
+                      : "0.00")}
+                </span>
+              </li>
+              <li>
+                <span>Delivery Fee:</span>
+                <span className="delivery-fee">
+                  {"$" +
+                    (dataSettings.length > 0 //render only when data is already fetched
+                      ? dataSettings[0].delFee.toFixed(2)
+                      : "0.00")}
+                </span>
+              </li>
+              <li>
+                <span>Tax Fee:</span>
+                <span className="tax-fee">
+                  {"%" +
+                    (dataSettings.length > 0 //render only when data is already fetched
+                      ? Number(dataSettings[0].taxRate) * 100
+                      : "0.00")}
+                </span>
+              </li>
+              <li>
+                <span>Total:</span>
+                <span className="grand-total">
+                  {"$" +
+                    (checkoutProducts.length !== 0
+                      ? grandTotal.toFixed(2)
+                      : "0.00")}
+                </span>
+              </li>
+            </ul>
+          )}
+
           <div className="checkout-secure-con">
             <img
               src="./images/about/fifthSection/shield-check.svg"

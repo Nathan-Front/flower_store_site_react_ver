@@ -142,6 +142,9 @@ export default function Cart({
             </p>
             <Link
               to="/checkout"
+              state={{
+                buyNow: false,
+              }}
               onClick={() => {
                 setCartOpen(false);
                 setIsOpen(false);

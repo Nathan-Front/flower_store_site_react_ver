@@ -160,7 +160,7 @@
 .checkout-secure-con> img {
     width: clamp(40px, 5vw, 70px);
 }
-.checkout-secure-sub-con> {
+.checkout-secure-sub-con {
     display: flex;
     flex-direction: column;
     gap: 16px !important;

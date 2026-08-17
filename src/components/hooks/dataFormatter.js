@@ -49,3 +49,10 @@ export function formatProducts(products) {
       : [],
   }));
 }
+
+export function formatCartDisplay(data) {
+  return data.map((setting) => ({
+    delFee: setting.DeliveryFee,
+    taxRate: setting.TaxRate,
+  }));
+}

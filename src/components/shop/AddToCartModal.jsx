@@ -77,10 +77,7 @@ function AddToCartModal({
     const selectedProduct = shopProducts.find(
       (item) => Number(item.no) === Number(clickedProduct.no),
     );
-    console.log("clickedProduct:", clickedProduct);
-    console.log("selectedProduct:", selectedProduct);
-    console.log("quantity:", isQuantity);
-    //replace any item if there are in the storage
+    //store buy now item in a state
     navigate("/checkout", {
       state: {
         buyNow: true,
@@ -88,14 +85,6 @@ function AddToCartModal({
         quantity: isQuantity,
       },
     });
-    /* const buyNow = [
-      {
-        item: selectedProduct,
-        quantity: isQuantity,
-      },
-    ];
-
-    localStorage.setItem("buyNowItem", JSON.stringify(buyNow)); */
     setModalOpen(false);
     setIsOpen(false);
     setIsQuantity(1);
