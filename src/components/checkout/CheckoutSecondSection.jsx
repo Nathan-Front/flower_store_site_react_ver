@@ -70,13 +70,31 @@ export default function CheckoutSecondSection({ updateCart }) {
       return updatedCart;
     });
   };
+  //delete item
+  const deleteItemHandler = (productId) => {
+    const updatedCart = checkoutProducts.filter(
+      (selected) => Number(selected.item.no) !== Number(productId),
+    );
+    setCheckoutProducts(updatedCart);
+    if (!buyNow) {
+      updateCart(updatedCart);
+    }
+  };
 
   return (
     <>
       <section className="cart-second-sec">
         <div>
           <h3>Order Summary</h3>
-          <div className="order-summary-message"></div>
+          {checkoutProducts.length === 0 ? (
+            <div className="order-summary-message">
+              Your cart is empty. Please add items to your cart before
+              proceeding to checkout.
+            </div>
+          ) : (
+            ""
+          )}
+
           <ul className="cart-checkout-content">
             {checkoutProducts.map((item) => (
               <li key={item.item.no}>
@@ -111,7 +129,10 @@ export default function CheckoutSecondSection({ updateCart }) {
                       >
                         +
                       </button>
-                      <button className="cart-modal-del-btn">
+                      <button
+                        className="cart-modal-del-btn"
+                        onClick={() => deleteItemHandler(item.item.no)}
+                      >
                         <i className="fa-solid fa-trash"></i>
                       </button>
                     </div>
@@ -137,7 +158,7 @@ export default function CheckoutSecondSection({ updateCart }) {
                 <span>Delivery Fee:</span>
                 <span className="delivery-fee">
                   {"$" +
-                    (dataSettings.length > 0 //render only when data is already fetched
+                    (checkoutProducts.length !== 0 //render only when data is already fetched
                       ? dataSettings[0].delFee.toFixed(2)
                       : "0.00")}
                 </span>
@@ -146,7 +167,7 @@ export default function CheckoutSecondSection({ updateCart }) {
                 <span>Tax Fee:</span>
                 <span className="tax-fee">
                   {"%" +
-                    (dataSettings.length > 0 //render only when data is already fetched
+                    (checkoutProducts.length !== 0 //render only when data is already fetched
                       ? Number(dataSettings[0].taxRate) * 100
                       : "0.00")}
                 </span>
