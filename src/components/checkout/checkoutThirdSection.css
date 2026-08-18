@@ -101,6 +101,33 @@
     border: 1px solid #a64b66;
     background: #e0bac5;
 }
+
+/*paypal*/
+.paypal-container {
+    display: none;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-10px); 
+    transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease,
+        transform 0.25s ease;
+}
+.paypal-container.showPayment {
+    display: block;
+    max-height: 2000px; 
+    opacity: 1;
+    transform: translateY(0);
+    padding: 24px 0 0 0;
+} 
+.payment-message {
+    margin-bottom: 4px;
+    color: #c0392b;
+    font-size: 0.8rem;
+    text-align: center;
+}
+/*COD*/
 .cash-on-delivery-btn-con {
     display: none;
    
@@ -162,28 +189,4 @@
     }
 } 
 
-/*paypal*/
-.paypal-container {
-    display: none;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transform: translateY(-10px);
-    transition:
-        max-height 0.35s ease,
-        opacity 0.25s ease,
-        transform 0.25s ease;
-}
-.paypal-container.show {
-    display: block;
-    max-height: 2000px; 
-    opacity: 1;
-    transform: translateY(0);
-    padding: 24px 0 0 0;
-}
-.payment-message {
-    margin-bottom: 4px;
-    color: #c0392b;
-    font-size: 0.8rem;
-    text-align: center;
-}
+

@@ -1,5 +1,43 @@
 import "./checkoutThirdSection.css";
-export default function CheckoutThirdSection() {
+import { useState } from "react";
+import PaypalButton from "../paypalButton/PaypalButton.jsx";
+export default function CheckoutThirdSection({ cartItems }) {
+  const [isPaypal, setPaypal] = useState("");
+  const [isSetPayment, setPayment] = useState(false);
+  const radioBtnHandler = (payment) => {
+    if (payment === "paypal") {
+      setPayment(payment);
+      setPaypal("paypal");
+    } else {
+      setPayment(payment);
+      setPaypal("COD");
+    }
+  };
+  const initialForm = {
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    zip: "",
+    date: "",
+    time: "",
+    note: "",
+  };
+
+  const [isInput, setIsInput] = useState(initialForm);
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setIsInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const dataParams = {
+    cart: cartItems,
+    customer: isInput,
+    paymentMethod: isSetPayment,
+  };
   return (
     <>
       <section className="cart-third-sec">
@@ -22,6 +60,7 @@ export default function CheckoutThirdSection() {
                   id="checkoutEmail"
                   placeholder="Your email@example.com"
                   required
+                  onChange={inputHandler}
                 />
               </div>
               <div className="input-label-con">
@@ -32,6 +71,7 @@ export default function CheckoutThirdSection() {
                   id="checkoutPhone"
                   placeholder="09XX XXXX XXXX"
                   required
+                  onChange={inputHandler}
                 />
               </div>
             </div>
@@ -52,6 +92,7 @@ export default function CheckoutThirdSection() {
                   id="checkoutName"
                   placeholder="John Doe"
                   required
+                  onChange={inputHandler}
                 />
               </div>
               <div className="input-label-con">
@@ -62,6 +103,7 @@ export default function CheckoutThirdSection() {
                   id="checkoutAddress"
                   placeholder="Street, block, building, house number"
                   required
+                  onChange={inputHandler}
                 />
               </div>
               <div className="shipping-inner-con">
@@ -73,6 +115,7 @@ export default function CheckoutThirdSection() {
                     id="checkoutCity"
                     placeholder="City"
                     required
+                    onChange={inputHandler}
                   />
                 </div>
                 <div className="input-label-con">
@@ -83,6 +126,7 @@ export default function CheckoutThirdSection() {
                     id="checkoutZip"
                     placeholder="Zip code"
                     required
+                    onChange={inputHandler}
                   />
                 </div>
                 <div className="input-label-con">
@@ -93,6 +137,7 @@ export default function CheckoutThirdSection() {
                     id="checkoutDate"
                     placeholder="Select delivery date"
                     required
+                    onChange={inputHandler}
                   />
                 </div>
                 <div className="input-label-con">
@@ -103,6 +148,7 @@ export default function CheckoutThirdSection() {
                     id="checkoutTime"
                     placeholder="Select desired time"
                     required
+                    onChange={inputHandler}
                   />
                 </div>
               </div>
@@ -112,6 +158,7 @@ export default function CheckoutThirdSection() {
                   name="note"
                   placeholder="Order note"
                   id="order-note"
+                  onChange={inputHandler}
                 ></textarea>
               </div>
             </div>
@@ -132,6 +179,7 @@ export default function CheckoutThirdSection() {
                     name="paymentMethod"
                     id="paypal"
                     value="paypal"
+                    onChange={() => radioBtnHandler("paypal")}
                   />
                   <span>PayPal</span>
                   <div className="payment-card-con">
@@ -146,8 +194,11 @@ export default function CheckoutThirdSection() {
                     />
                   </div>
                 </label>
-                <div className="paypal-container">
+                <div
+                  className={`paypal-container ${isPaypal === "paypal" ? "showPayment" : ""}`}
+                >
                   <div id="paypal-button-container"></div>
+                  <PaypalButton dataParams={dataParams} cartItems={cartItems} />
                   <p id="result-message"></p>
                 </div>
               </div>
@@ -158,6 +209,7 @@ export default function CheckoutThirdSection() {
                     name="paymentMethod"
                     id="cashOnDelivery"
                     value="cash-on-delivery"
+                    onChange={() => radioBtnHandler("COD")}
                   />
                   <span>Cash on Delivery</span>
                   <div className="payment-card-con">
@@ -167,7 +219,9 @@ export default function CheckoutThirdSection() {
                     />
                   </div>
                 </label>
-                <div className="cash-on-delivery-btn-con">
+                <div
+                  className={`cash-on-delivery-btn-con ${isPaypal === "COD" ? "showCODbtn" : ""}`}
+                >
                   <button id="place-order-btn" type="button">
                     Place Order
                   </button>
