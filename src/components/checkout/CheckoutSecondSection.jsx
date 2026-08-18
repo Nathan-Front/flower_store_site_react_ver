@@ -7,7 +7,7 @@ import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import { formatCartDisplay } from "../hooks/dataFormatter.js";
 
-export default function CheckoutSecondSection() {
+export default function CheckoutSecondSection({ updateCart }) {
   const {
     data: dataSettings, //rename the data and render its contents
     loading,
@@ -18,6 +18,8 @@ export default function CheckoutSecondSection() {
   const item = location.state?.item;
   const quantity = location.state?.quantity;
   const [checkoutProducts, setCheckoutProducts] = useState([]);
+
+  //select which storage to be rendered
   useEffect(() => {
     if (buyNow && quantity) {
       const timer = setTimeout(() => {
@@ -52,17 +54,23 @@ export default function CheckoutSecondSection() {
       : 0;
 
   const handleQuantity = (productNo, change) => {
-    setCheckoutProducts((prevProducts) =>
-      prevProducts.map((item) =>
-        Number(item.item.no) === Number(productNo)
-          ? {
-              ...item,
-              quantity: Math.max(1, Number(item.quantity) + change),
-            }
-          : item,
-      ),
-    );
+    setCheckoutProducts((prevProducts) => {
+      const updatedCart = prevProducts.map((item) => {
+        if (Number(item.item.no) === Number(productNo)) {
+          return {
+            ...item,
+            quantity: Math.max(1, Number(item.quantity) + change),
+          };
+        }
+        return item;
+      });
+      if (!buyNow) {
+        updateCart(updatedCart); //update the counter ony if temporary cart is rendered
+      }
+      return updatedCart;
+    });
   };
+
   return (
     <>
       <section className="cart-second-sec">
