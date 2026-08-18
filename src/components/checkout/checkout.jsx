@@ -1,4 +1,4 @@
-import CheckoutFirstSection from "./checkoutFirstSection.jsx";
+import CheckoutFirstSection from "./CheckoutFirstSection.jsx";
 import CheckoutSecondSection from "./CheckoutSecondSection.jsx";
 import CheckoutThirdSection from "./CheckoutThirdSection.jsx";
 import "./checkoutFirstSection.css";
