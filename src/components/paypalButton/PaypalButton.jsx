@@ -1,5 +1,12 @@
-import { useEffect, useRef } from "react";
-export default function PaypalButton({ formDataRef, dataParams, formRef }) {
+import { useEffect, useRef, useState } from "react";
+import Overlay from "../loadingComponent/Overlay.jsx";
+export default function PaypalButton({
+  formDataRef,
+  dataParams,
+  formRef,
+  onOrderComplete,
+}) {
+  const [orderResult, setOrderResult] = useState(null);
   console.log("PaypalButton rendered");
   console.log("window.paypal:", window.paypal);
   const SERVER_URL = "https://flower-store-site-react-ver.onrender.com";
@@ -131,6 +138,7 @@ export default function PaypalButton({ formDataRef, dataParams, formRef }) {
             if (result.googleScript.success) {
               console.log("Result: " + result);
               console.log("googleScript: " + result.googleScript);
+              onOrderComplete(result);
               /* showOrderSuccessModal(result);
               hideLoadingOverlay(); */
               /* document.body.classList.remove("no-scroll"); */
@@ -155,5 +163,9 @@ export default function PaypalButton({ formDataRef, dataParams, formRef }) {
     };
   }, [dataParams]);
   console.log(dataParams);
-  return <div ref={paypalRef}></div>;
+  return (
+    <>
+      <div ref={paypalRef}></div>;
+    </>
+  );
 }

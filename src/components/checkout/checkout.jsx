@@ -28,6 +28,7 @@ export default function Checkout({ updateCart, cartItems }) {
         cartItems={cartItems}
         checkoutProducts={checkoutProducts}
         dataSettings={dataSettings}
+        setCheckoutProducts={setCheckoutProducts}
       />
     </div>
   );

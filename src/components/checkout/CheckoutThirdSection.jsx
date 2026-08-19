@@ -3,11 +3,12 @@ import { useState, useRef, useEffect, useContext } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
 import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
-
+import Overlay from "../loadingComponent/Overlay.jsx";
 export default function CheckoutThirdSection({
   cartItems,
   checkoutProducts,
   dataSettings,
+  setCheckoutProducts,
 }) {
   const [isPaypal, setPaypal] = useState("");
   const [isSetPayment, setPayment] = useState(false);
@@ -88,6 +89,8 @@ export default function CheckoutThirdSection({
   //overlay and spinner
   const { setIsOpen, setSpinner } = useContext(OverlayContext);
 
+  const [orderResult, setOrderResult] = useState(null);
+
   //hadnler for COD since we dont do like paypal button
   const handleCODOrder = async () => {
     if (!formRef.current?.checkValidity()) {
@@ -96,7 +99,7 @@ export default function CheckoutThirdSection({
     }
     try {
       setIsOpen(true);
-      setSpinner("spinner");
+      setSpinner("COD");
       const response = await fetch(
         "https://flower-store-site-react-ver.onrender.com/api/orders/cod", //hard code the backend since paypalbutton is separated
         {
@@ -111,6 +114,8 @@ export default function CheckoutThirdSection({
         throw new Error("Failed to place COD order.");
       }
       const result = await response.json();
+
+      setOrderResult(result);
       console.log("COD RESULT:", result);
     } catch (error) {
       console.error("Failed to place COD order:", error);
@@ -291,6 +296,7 @@ export default function CheckoutThirdSection({
                       formDataRef={formDataRef}
                       dataParams={dataParams}
                       formRef={formRef}
+                      onOrderComplete={setOrderResult}
                     />
                     <p id="result-message"></p>
                   </div>
@@ -329,6 +335,14 @@ export default function CheckoutThirdSection({
           </form>
         </div>
       </section>
+      {orderResult && (
+        <Overlay
+          type="success"
+          paypal={orderResult.type}
+          orderResult={orderResult}
+          onClose={() => setOrderResult(null)}
+        />
+      )}
     </>
   );
 }

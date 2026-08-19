@@ -39,7 +39,11 @@ export default function CheckoutSecondSection({
       return () => clearTimeout(timer);
     }
   }, [buyNow, item, quantity]);
-
+  console.log("🔥 checkoutProducts in SecondSection:", checkoutProducts);
+  console.log(
+    "🔥 Is checkoutProducts an array?",
+    Array.isArray(checkoutProducts),
+  );
   const subTotal = checkoutProducts.reduce(
     (total, product) => total + product.item.price * product.quantity,
     0,
