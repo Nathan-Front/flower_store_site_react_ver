@@ -7,7 +7,11 @@ import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
 import { formatCartDisplay } from "../hooks/dataFormatter.js";
 
-export default function CheckoutSecondSection({ updateCart }) {
+export default function CheckoutSecondSection({
+  updateCart,
+  checkoutProducts,
+  setCheckoutProducts,
+}) {
   const {
     data: dataSettings, //rename the data and render its contents
     loading,
@@ -17,7 +21,6 @@ export default function CheckoutSecondSection({ updateCart }) {
   const buyNow = location.state?.buyNow;
   const item = location.state?.item;
   const quantity = location.state?.quantity;
-  const [checkoutProducts, setCheckoutProducts] = useState([]);
 
   //select which storage to be rendered
   useEffect(() => {

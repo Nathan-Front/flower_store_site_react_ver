@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-
 export default function PaypalButton({ formDataRef, dataParams }) {
   console.log("PaypalButton rendered");
   console.log("window.paypal:", window.paypal);
@@ -48,14 +47,11 @@ export default function PaypalButton({ formDataRef, dataParams }) {
             paymentMethod: formDataRef.current.paymentMethod,
           };
           console.log("🔥 ORDER DETAILS BEING SENT:", orderDetails);
-          /* const orderDetails = getOrderDetails();
           if (orderDetails.paymentMethod !== "paypal") {
             throw new Error(
               "Selected payment method is not PayPal. Please select PayPal to proceed.",
             );
           }
-          console.log("Frontend cart:", orderDetails.cart);
-          console.log("Selected payment method:", orderDetails.paymentMethod); */
 
           const response = await fetch(`${SERVER_URL}/api/orders`, {
             method: "POST",

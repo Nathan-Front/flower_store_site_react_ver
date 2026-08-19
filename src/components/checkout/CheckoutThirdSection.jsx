@@ -1,7 +1,8 @@
 import "./checkoutThirdSection.css";
 import { useState, useRef, useEffect } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
-export default function CheckoutThirdSection({ cartItems }) {
+
+export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
   const [isPaypal, setPaypal] = useState("");
   const [isSetPayment, setPayment] = useState(false);
   const radioBtnHandler = (payment) => {
@@ -53,28 +54,48 @@ export default function CheckoutThirdSection({ cartItems }) {
     paymentMethod: isPaypal,
   };
 
+  //hadnler for COD since we dont do like paypal button
   const handleCODOrder = async () => {
-    const response = await fetch(
-      "https://flosandflorere.onrender.com/api/orders/cod",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      setSpinner(true);
+      const response = await fetch(
+        "https://flower-store-site-react-ver.onrender.com/api/orders/cod", //hard code the backend since paypalbutton is separated
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataParams),
         },
-        body: JSON.stringify(dataParams),
-      },
-    );
-
-    const result = await response.json();
-
-    console.log("COD RESULT:", result);
+      );
+      if (!response.ok) {
+        throw new Error("Failed to place COD order.");
+      }
+      const result = await response.json();
+      console.log("COD RESULT:", result);
+    } catch (error) {
+      console.error("Failed to place COD order:", error);
+      throw error;
+    }
   };
+
+  const formRef = useRef(null);
+  useEffect(() => {
+    if (!formRef.current) return;
+
+    const hasItems = checkoutProducts.length > 0;
+    formRef.current.classList.toggle("form-disabled", !hasItems); //hasItems true = remove form-disabled, false = add form-disabled
+    //get all form elements and disable them if cart is empty
+    [...formRef.current.elements].forEach((element) => {
+      element.disabled = !hasItems;
+    });
+  }, [checkoutProducts]);
 
   return (
     <>
       <section className="cart-third-sec">
         <div className="form-container">
-          <form id="checkout-form">
+          <form id="checkout-form" ref={formRef}>
             <div className="contact-info-con">
               <div className="checkout-panel-title">
                 <img
@@ -232,7 +253,6 @@ export default function CheckoutThirdSection({ cartItems }) {
                     <PaypalButton
                       formDataRef={formDataRef}
                       dataParams={dataParams}
-                      cartItems={cartItems}
                     />
                     <p id="result-message"></p>
                   </div>
