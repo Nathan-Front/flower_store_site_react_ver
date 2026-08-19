@@ -52,7 +52,24 @@ export default function CheckoutThirdSection({ cartItems }) {
     customer: isInput,
     paymentMethod: isPaypal,
   };
-  console.log("param", dataParams);
+
+  const handleCODOrder = async () => {
+    const response = await fetch(
+      "https://flosandflorere.onrender.com/api/orders/cod",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataParams),
+      },
+    );
+
+    const result = await response.json();
+
+    console.log("COD RESULT:", result);
+  };
+
   return (
     <>
       <section className="cart-third-sec">
@@ -238,13 +255,17 @@ export default function CheckoutThirdSection({ cartItems }) {
                     />
                   </div>
                 </label>
-                <div
-                  className={`cash-on-delivery-btn-con ${isPaypal === "COD" ? "showCODbtn" : ""}`}
-                >
-                  <button id="place-order-btn" type="button">
-                    Place Order
-                  </button>
-                </div>
+                {isPaypal === "COD" && (
+                  <div className="cash-on-delivery-btn-con showCODbtn">
+                    <button
+                      id="place-order-btn"
+                      type="button"
+                      onClick={handleCODOrder}
+                    >
+                      Place Order
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </form>
