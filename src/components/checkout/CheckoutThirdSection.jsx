@@ -57,7 +57,7 @@ export default function CheckoutThirdSection({
   }, [isInput, isSetPayment]);
 
   const dataParams = {
-    cart: cartItems,
+    cart: checkoutProducts,
     customer: isInput,
     paymentMethod: isPaypal,
   };
