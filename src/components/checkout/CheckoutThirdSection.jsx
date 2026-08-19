@@ -2,7 +2,11 @@ import "./checkoutThirdSection.css";
 import { useState, useRef, useEffect } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
 
-export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
+export default function CheckoutThirdSection({
+  cartItems,
+  checkoutProducts,
+  dataSettings,
+}) {
   const [isPaypal, setPaypal] = useState("");
   const [isSetPayment, setPayment] = useState(false);
   const radioBtnHandler = (payment) => {
@@ -41,6 +45,8 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
   });
 
   // Update ref whenever state changes
+  const [isFormValid, setIsFormValid] = useState(false);
+  const formRef = useRef(null);
   useEffect(() => {
     formDataRef.current = {
       customer: isInput,
@@ -54,10 +60,36 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
     paymentMethod: isPaypal,
   };
 
+  //enable/disable whole form container
+  useEffect(() => {
+    if (!formRef.current) return;
+
+    const hasItems = checkoutProducts.length > 0;
+    const hasLoaded = dataSettings.length > 0;
+    const canEnableForm = hasItems && hasLoaded;
+    formRef.current.classList.toggle("form-disabled", !canEnableForm); //hasItems true = remove form-disabled, false = add form-disabled
+    //get all form elements and disable them if cart is empty
+    /* [...formRef.current.elements].forEach((element) => {
+      element.disabled = !canEnableForm;
+    }); */
+  }, [checkoutProducts, dataSettings]);
+
+  //enable/disable payment method container
+  useEffect(() => {
+    if (!formRef.current) return;
+
+    setIsFormValid(formRef.current.checkValidity());
+  }, [isInput]);
+  const canSelectPayment =
+    checkoutProducts.length > 0 && dataSettings.length > 0 && isFormValid;
+
   //hadnler for COD since we dont do like paypal button
   const handleCODOrder = async () => {
+    if (!formRef.current?.checkValidity()) {
+      console.log("Form is invalid");
+      return;
+    }
     try {
-      setSpinner(true);
       const response = await fetch(
         "https://flower-store-site-react-ver.onrender.com/api/orders/cod", //hard code the backend since paypalbutton is separated
         {
@@ -78,18 +110,6 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
       throw error;
     }
   };
-
-  const formRef = useRef(null);
-  useEffect(() => {
-    if (!formRef.current) return;
-
-    const hasItems = checkoutProducts.length > 0;
-    formRef.current.classList.toggle("form-disabled", !hasItems); //hasItems true = remove form-disabled, false = add form-disabled
-    //get all form elements and disable them if cart is empty
-    [...formRef.current.elements].forEach((element) => {
-      element.disabled = !hasItems;
-    });
-  }, [checkoutProducts]);
 
   return (
     <>
@@ -215,7 +235,10 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
                 ></textarea>
               </div>
             </div>
-            <div className="payment-method-con">
+            <fieldset
+              className="payment-method-con"
+              disabled={!canSelectPayment}
+            >
               <div className="checkout-panel-title">
                 <img
                   src="./images/cart/secondSection/credit-card.svg"
@@ -224,7 +247,11 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
                 />
                 <span>3. Payment Method</span>
               </div>
-              <div id="payment-message" className="payment-message"></div>
+              <div id="payment-message" className="payment-message">
+                {isFormValid
+                  ? ""
+                  : "Please complete all required fields before placing an order."}
+              </div>
               <div>
                 <label className="payment-option">
                   <input
@@ -247,12 +274,13 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
                     />
                   </div>
                 </label>
-                {isPaypal === "paypal" && (
+                {isPaypal === "paypal" && isFormValid && (
                   <div className="paypal-container showPayment">
                     <div id="paypal-button-container"></div>
                     <PaypalButton
                       formDataRef={formDataRef}
                       dataParams={dataParams}
+                      formRef={formRef}
                     />
                     <p id="result-message"></p>
                   </div>
@@ -275,7 +303,7 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
                     />
                   </div>
                 </label>
-                {isPaypal === "COD" && (
+                {isPaypal === "COD" && isFormValid && (
                   <div className="cash-on-delivery-btn-con showCODbtn">
                     <button
                       id="place-order-btn"
@@ -287,7 +315,7 @@ export default function CheckoutThirdSection({ cartItems, checkoutProducts }) {
                   </div>
                 )}
               </div>
-            </div>
+            </fieldset>
           </form>
         </div>
       </section>

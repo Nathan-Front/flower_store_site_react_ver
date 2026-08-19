@@ -18,7 +18,8 @@
   opacity: 0.5;
   pointer-events: none;
 }
-.form-container> form> div {
+.form-container> form> div,
+.form-container> form> fieldset {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -26,6 +27,9 @@
     background-color: #fff;
     border-radius: 0.5rem;
     padding: 16px;
+}
+.form-container> form> fieldset {
+    border: none;
 }
 .contact-info-con> div,
 .shipping-info-con> div {

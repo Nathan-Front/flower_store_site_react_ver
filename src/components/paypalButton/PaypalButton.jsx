@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-export default function PaypalButton({ formDataRef, dataParams }) {
+export default function PaypalButton({ formDataRef, dataParams, formRef }) {
   console.log("PaypalButton rendered");
   console.log("window.paypal:", window.paypal);
   const SERVER_URL = "https://flower-store-site-react-ver.onrender.com";
@@ -11,8 +11,11 @@ export default function PaypalButton({ formDataRef, dataParams }) {
       console.error("PayPal SDK has not loaded.");
       return;
     }
+    if (!formRef.current?.checkValidity()) {
+      console.log("Form is invalid");
+      return;
+    }
     let copyRef = paypalRef.current;
-
     if (!copyRef) return;
     // Prevent initialization more than once
     if (initialized.current) return;

@@ -2,21 +2,17 @@ import "./checkoutSecondSection.css";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { formatPrice } from "../hooks/productPriceFormat.jsx";
-import useFetch from "../hooks/renderFetchData.js";
 import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import LoadingError from "../loadingComponent/LoadingError.jsx";
-import { formatCartDisplay } from "../hooks/dataFormatter.js";
 
 export default function CheckoutSecondSection({
   updateCart,
+  dataSettings,
+  loading,
+  error,
   checkoutProducts,
   setCheckoutProducts,
 }) {
-  const {
-    data: dataSettings, //rename the data and render its contents
-    loading,
-    error,
-  } = useFetch("checkout", "settings", formatCartDisplay);
   const location = useLocation();
   const buyNow = location.state?.buyNow;
   const item = location.state?.item;
