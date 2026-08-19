@@ -178,8 +178,13 @@ const createOrder = async (cart) => {
 app.post("/api/orders", async (req, res) => {
   console.log("🔥 /api/orders was called");
   try {
+    console.log("🔥 /api/orders CALLED");
+    console.log("🔥 REQUEST BODY:", req.body);
     //use the cart information passed from the front-end
     const { cart, customer, paymentMethod } = req.body;
+    console.log("🔥 CUSTOMER BEFORE PENDING ORDER:", customer);
+    console.log("🔥 DATE:", customer?.date);
+    console.log("🔥 TIME:", customer?.time);
     console.log("Cart received:", cart);
     console.log("Customer received:", customer);
     console.log("Payment method received:", paymentMethod);
@@ -263,8 +268,8 @@ function buildOrderData({
     address: customer.address,
     city: customer.city,
     zip: customer.zip,
-    deliveryDate: customer.deliveryDate,
-    deliveryTime: customer.deliveryTime,
+    deliveryDate: customer.date,
+    deliveryTime: customer.time,
     note: customer.note,
 
     items: cart.map((item) => ({

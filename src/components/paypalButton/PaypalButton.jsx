@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export default function PaypalButton({ dataParams }) {
+export default function PaypalButton({ formDataRef, dataParams }) {
   console.log("PaypalButton rendered");
   console.log("window.paypal:", window.paypal);
-  const SERVER_URL = "https://flosandflorere.onrender.com";
+  const SERVER_URL = "https://flower-store-site-react-ver.onrender.com";
   //const SERVER_URL = "http://localhost:8080";
   const paypalRef = useRef(null);
   const initialized = useRef(false);
@@ -13,6 +13,7 @@ export default function PaypalButton({ dataParams }) {
       return;
     }
     let copyRef = paypalRef.current;
+
     if (!copyRef) return;
     // Prevent initialization more than once
     if (initialized.current) return;
@@ -40,7 +41,13 @@ export default function PaypalButton({ dataParams }) {
         async createOrder() {
           console.log("🔥 CREATE ORDER CALLED");
           // Get the order details from the form and localstorage
-          const orderDetails = dataParams;
+          /* const orderDetails = dataParams; */
+          const orderDetails = {
+            cart: dataParams.cart,
+            customer: formDataRef.current.customer,
+            paymentMethod: formDataRef.current.paymentMethod,
+          };
+          console.log("🔥 ORDER DETAILS BEING SENT:", orderDetails);
           /* const orderDetails = getOrderDetails();
           if (orderDetails.paymentMethod !== "paypal") {
             throw new Error(
@@ -69,7 +76,7 @@ export default function PaypalButton({ dataParams }) {
         async onApprove(data, actions) {
           console.log("🔥 ON APPROVE", data);
           /* showLoadingOverlay(); */
-          document.body.classList.add("no-scroll");
+          /* document.body.classList.add("no-scroll"); */
           try {
             const response = await fetch(
               `${SERVER_URL}/api/orders/${data.orderID}/capture`,
@@ -78,6 +85,7 @@ export default function PaypalButton({ dataParams }) {
                 headers: {
                   "Content-Type": "application/json",
                 },
+                body: JSON.stringify(dataParams),
               },
             );
 
@@ -139,7 +147,7 @@ export default function PaypalButton({ dataParams }) {
           }
         },
       })
-      .render(copyRef);
+      .render(paypalRef.current);
 
     return () => {
       if (copyRef) {

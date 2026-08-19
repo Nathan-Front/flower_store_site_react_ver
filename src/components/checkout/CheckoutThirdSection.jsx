@@ -1,5 +1,5 @@
 import "./checkoutThirdSection.css";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
 export default function CheckoutThirdSection({ cartItems }) {
   const [isPaypal, setPaypal] = useState("");
@@ -33,11 +33,26 @@ export default function CheckoutThirdSection({ cartItems }) {
       [name]: value,
     }));
   };
+  // Create a ref to store live form and payment data
+  const formDataRef = useRef({
+    customer: isInput,
+    paymentMethod: isSetPayment,
+  });
+
+  // Update ref whenever state changes
+  useEffect(() => {
+    formDataRef.current = {
+      customer: isInput,
+      paymentMethod: isSetPayment,
+    };
+  }, [isInput, isSetPayment]);
+
   const dataParams = {
     cart: cartItems,
     customer: isInput,
-    paymentMethod: isSetPayment,
+    paymentMethod: isPaypal,
   };
+  console.log("param", dataParams);
   return (
     <>
       <section className="cart-third-sec">
@@ -194,13 +209,17 @@ export default function CheckoutThirdSection({ cartItems }) {
                     />
                   </div>
                 </label>
-                <div
-                  className={`paypal-container ${isPaypal === "paypal" ? "showPayment" : ""}`}
-                >
-                  <div id="paypal-button-container"></div>
-                  <PaypalButton dataParams={dataParams} cartItems={cartItems} />
-                  <p id="result-message"></p>
-                </div>
+                {isPaypal === "paypal" && (
+                  <div className="paypal-container showPayment">
+                    <div id="paypal-button-container"></div>
+                    <PaypalButton
+                      formDataRef={formDataRef}
+                      dataParams={dataParams}
+                      cartItems={cartItems}
+                    />
+                    <p id="result-message"></p>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="payment-option">
