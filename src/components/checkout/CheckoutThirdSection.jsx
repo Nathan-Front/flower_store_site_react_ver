@@ -1,6 +1,8 @@
 import "./checkoutThirdSection.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
+import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
+import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 
 export default function CheckoutThirdSection({
   cartItems,
@@ -83,6 +85,9 @@ export default function CheckoutThirdSection({
   const canSelectPayment =
     checkoutProducts.length > 0 && dataSettings.length > 0 && isFormValid;
 
+  //overlay and spinner
+  const { setIsOpen, setSpinner } = useContext(OverlayContext);
+
   //hadnler for COD since we dont do like paypal button
   const handleCODOrder = async () => {
     if (!formRef.current?.checkValidity()) {
@@ -90,6 +95,8 @@ export default function CheckoutThirdSection({
       return;
     }
     try {
+      setIsOpen(true);
+      setSpinner("spinner");
       const response = await fetch(
         "https://flower-store-site-react-ver.onrender.com/api/orders/cod", //hard code the backend since paypalbutton is separated
         {
@@ -108,6 +115,9 @@ export default function CheckoutThirdSection({
     } catch (error) {
       console.error("Failed to place COD order:", error);
       throw error;
+    } finally {
+      setIsOpen(false);
+      setSpinner(null);
     }
   };
 
