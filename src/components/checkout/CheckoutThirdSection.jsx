@@ -1,14 +1,11 @@
 import "./checkoutThirdSection.css";
 import { useState, useRef, useEffect, useContext } from "react";
 import PaypalButton from "../paypalButton/PaypalButton.jsx";
-import LoadingSpinner from "../loadingComponent/LoadingSpinner.jsx";
 import { OverlayContext } from "../loadingComponent/OverlayContext.jsx";
 import Overlay from "../loadingComponent/Overlay.jsx";
 export default function CheckoutThirdSection({
-  cartItems,
   checkoutProducts,
   dataSettings,
-  setCheckoutProducts,
 }) {
   const [isPaypal, setPaypal] = useState("");
   const [isSetPayment, setPayment] = useState(false);
@@ -89,6 +86,7 @@ export default function CheckoutThirdSection({
   //overlay and spinner
   const { setIsOpen, setSpinner } = useContext(OverlayContext);
 
+  //result catcher for loaders
   const [orderResult, setOrderResult] = useState(null);
 
   //hadnler for COD since we dont do like paypal button
@@ -297,6 +295,9 @@ export default function CheckoutThirdSection({
                       dataParams={dataParams}
                       formRef={formRef}
                       onOrderComplete={setOrderResult}
+                      setOrderResult={setOrderResult}
+                      setIsOpen={setIsOpen}
+                      setSpinner={setSpinner}
                     />
                     <p id="result-message"></p>
                   </div>

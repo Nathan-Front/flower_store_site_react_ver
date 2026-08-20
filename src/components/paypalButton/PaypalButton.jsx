@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import Overlay from "../loadingComponent/Overlay.jsx";
+import { useEffect, useRef, useContext } from "react";
+import { OverlayContext } from "../loadingComponent/OverlayContext";
 export default function PaypalButton({
   formDataRef,
   dataParams,
   formRef,
   onOrderComplete,
+  setOrderResult,
+  setIsOpen,
+  setSpinner,
 }) {
-  const [orderResult, setOrderResult] = useState(null);
+  /* const [orderResult, setOrderResult] = useState(null); */
   console.log("PaypalButton rendered");
   console.log("window.paypal:", window.paypal);
   const SERVER_URL = "https://flower-store-site-react-ver.onrender.com";
@@ -82,7 +85,11 @@ export default function PaypalButton({
         async onApprove(data, actions) {
           console.log("🔥 ON APPROVE", data);
           /* showLoadingOverlay(); */
-          /* document.body.classList.add("no-scroll"); */
+
+          //loader
+          setIsOpen(true);
+          setSpinner("credit");
+          document.body.classList.add("no-scroll");
           try {
             const response = await fetch(
               `${SERVER_URL}/api/orders/${data.orderID}/capture`,
@@ -97,6 +104,7 @@ export default function PaypalButton({
 
             //const orderData = await response.json(); the original code
             const result = await response.json(); //capture the passed result from the server.js
+            setOrderResult(result);
             // Three cases to handle:
             //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
             //   (2) Other non-recoverable errors -> Show a failure message
@@ -112,7 +120,7 @@ export default function PaypalButton({
               // recoverable state, per
               // https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
               /* hideLoadingOverlay(); */
-              /* document.body.classList.remove("no-scroll"); */
+
               return actions.restart();
             } else if (errorDetail) {
               // (2) Other non-recoverable errors -> Show a failure message
@@ -139,18 +147,18 @@ export default function PaypalButton({
               console.log("Result: " + result);
               console.log("googleScript: " + result.googleScript);
               onOrderComplete(result);
-              /* showOrderSuccessModal(result);
-              hideLoadingOverlay(); */
-              /* document.body.classList.remove("no-scroll"); */
             }
           } catch (error) {
             /* hideLoadingOverlay(); */
-            /* document.body.classList.remove("no-scroll"); */
+
             console.error(error);
             console.error("🔥 PAYPAL ERROR", error);
             /* resultMessage(
               `Sorry, your transaction could not be processed...<br><br>${error}`,
             ); */
+          } finally {
+            setIsOpen(false);
+            setSpinner(null);
           }
         },
       })
@@ -165,7 +173,7 @@ export default function PaypalButton({
   console.log(dataParams);
   return (
     <>
-      <div ref={paypalRef}></div>;
+      <div ref={paypalRef}></div>
     </>
   );
 }

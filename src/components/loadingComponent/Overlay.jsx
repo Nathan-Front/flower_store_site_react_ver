@@ -1,8 +1,20 @@
+import { useEffect } from "react";
 export default function Overlay({ type, paypal, orderResult, onClose }) {
+  useEffect(() => {
+    if (type === "COD" || type === "success") {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [type]);
   return (
     <div className="overlay">
       {type === "loading" && <span className="overlay-spinner"></span>}
-      {type === "COD" && (
+      {(type === "COD" || type === "credit") && (
         <div id="loading-overlay" className="loading-overlay">
           <div className="loader-box">
             <div className="waiting-spinner"></div>
@@ -11,7 +23,7 @@ export default function Overlay({ type, paypal, orderResult, onClose }) {
           </div>
         </div>
       )}
-      {type === "success" && orderResult && (
+      {(type === "success" || type === "credit") && orderResult && (
         <aside className="order-success-modal">
           <div>
             <h2>Order Confirmed!</h2>
