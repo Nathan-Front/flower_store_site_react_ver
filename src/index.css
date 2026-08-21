@@ -233,7 +233,7 @@ nav {
         margin: 0;
         top: var(--nav-height-mobile);
         left: 0;
-        width: 100%;
+        
         height: calc(100dvh - var(--nav-height-mobile));
         flex-direction: column;
         flex-grow: 1;
