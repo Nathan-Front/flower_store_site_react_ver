@@ -1,18 +1,232 @@
-# React + Vite
+---
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🌸 Flos & Florere
 
-Currently, two official plugins are available:
+Flos & Florere is a flower shop e-commerce website I built as part of my journey toward becoming a Frontend Web Developer.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+I’m a self-taught developer currently building my skills in HTML, CSS, JavaScript, React, responsive design, APIs, and backend integration through hands-on projects.
 
-## React Compiler
+This project includes features such as dynamic products, a shopping cart, checkout, PayPal payments, Pay Later, and Cash on Delivery. Also, news subscription and a message us with auto-mail reply.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+I built this project to challenge my self, practice real-world development, and continue improving my skills.
 
-Note: This will impact Vite dev & build performances.
+⚠️ \*\*Payment Testing:
 
-## Expanding the ESLint configuration
+Please do not use an actual Paypal account or debit/credit card when testing the website payment.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+I provided test accounts for these, so please use those instead when testing.
+
+_See the "How to Use" explanation below._
+
+Images are AI generated and edited it with GIMP to fit my design
+
+Some Icons, especially SVG icons, were sourced from https://www.svgrepo.com/
+
+## Preview
+
+### Home Page
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+    <th>Mobile Navigation</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+    <img src="./public/readMe/index_html.png" alt="Flos & Florere Homepage" width="400">
+    </td>
+    <td align="center" valign="top">
+      <img src="./public/readMe/mobile_hero.png" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+      <br>
+      <img src="./public/readMe/mobile_card.png" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+      <br>
+      <img src="./public/readMe/mobile_card2.png" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+      <br>
+      <img src="./public/readMe/mobile_card3.png" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+      <br>
+      <img src="./public/readMe/mobile_footer.jpeg" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_nav.png" alt="Flos & Florere  Homepage mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+### Shop Page
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/shop.png" alt="Flos & Florere Shoppage" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_shop.png" alt="Flos & Florere Shoppage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_shop_card.png" alt="Flos & Florere Shoppage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_footer.jpeg" alt="Flos & Florere Shoppage mobile" width="180" height="240">
+    </td>
+    
+  </tr>
+</table>
+
+Modal
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/product_modal.png" alt="Flos & Florere Shoppage modal" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_modal.png" alt="Flos & Florere Shoppage modal mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+Cart
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/cart.png"  alt="Flos & Florere Shoppage" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_cart.png" alt="Flos & Florere Shoppage cart mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+### Checkout Page
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/checkout.png"  alt="Flos & Florere checkoutpage" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_checkout1.png" alt="Flos & Florere checkoutpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_checkout2.png" alt="Flos & Florere checkoutpage mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+### About
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/about.png"  alt="Flos & Florere Aboutpage" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_about1.png" alt="Flos & Florere  Aboutpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_about2.png" alt="Flos & Florere Aboutpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_about3.png" alt="Flos & Florere Aboutpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_about4.png" alt="Flos & Florere Aboutpage mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+### Contact
+
+<table>
+  <tr>
+    <th>Desktop</th>
+    <th>Mobile</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+        <img src="./public/readMe/contact.png"   alt="Flos & Florere Contactpage" width="400">
+    </td>
+    <td align="center" valign="top">
+        <img src="./public/readMe/mobile_contact1.png" alt="Flos & Florere Contactpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_contact2.png" alt="Flos & Florere Contactpage mobile" width="180" height="240">
+        <br>
+        <img src="./public/readMe/mobile_contact3.png" alt="Flos & Florere Contactpage mobile" width="180" height="240">
+    </td>
+  </tr>
+</table>
+
+## How to Use
+
+1. Go to Shop page
+2. Click add to cart
+3. In popup modal add quantity then click add to cart
+4. On the top right click cart button
+5. Click Proceed to Checkout
+6. Fill the form
+
+\*Use your actual email also if you want to test the auto-reply for the placed orders.
+
+Note: If you dont feel like it to use your actual email.
+
+Go ahead and just input something else.
+
+I did not put email validator on this form so its ok to input anything.
+
+7. Select payment method
+
+\*If paypal is selected
+
+<img src="images/readMe/paypal_button.png" alt="Paypal payment" width="500">
+
+### Test Payment
+
+This website uses PayPal Sandbox, so no real money is charged.
+
+#### PayPal / Pay Later
+
+Use the following PayPal Sandbox Buyer Account:
+
+email: flosflorere@personal.example.com
+
+password: flosdemo2026
+
+#### Debit / Credit Card
+
+For the Debit or Credit Card payment option, use the Sandbox test card:
+
+Card number: 5110926875133391
+
+Expiry date: 11/2031
+
+CVC code: 295
+
+Contact/Phone: 2028733840
+
+As for state and zip code use this website
+
+https://apps.naaccr.org/vpr-cls/about-postal-codes
+
+⚠️ These are Sandbox test credentials and are not real payment information. Use them only on the PayPal Sandbox checkout.
+
+\*If Cash-On-Delivery is selected just fill the form then click place order button
+
+<img src="images/readMe/COD.png" alt="COD payment" width="500">
+
+\*Loading and rendering of data may take some few seconds up to 20 seconds depending to the Google apps script and/or Render backend
