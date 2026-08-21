@@ -708,6 +708,11 @@ nav {
     .cart-modal-aside {
         width: 100%;
     }
+    .cart-header,
+    .cart-modal-content {
+        width: 90%;
+        margin: 0 auto;
+    }
     .cart-product-image {
         width: 25%;
     }
