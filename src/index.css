@@ -227,13 +227,14 @@ nav {
     nav {
         height: var(--nav-height-mobile);
         overflow: hidden;
+        width: 100%;
     }
     .nav-links {
         position: fixed;
         margin: 0;
         top: var(--nav-height-mobile);
         left: 0;
-        
+        width: 100%;
         height: calc(100dvh - var(--nav-height-mobile));
         flex-direction: column;
         flex-grow: 1;
@@ -262,10 +263,10 @@ nav {
     .nav-links> li> a {
         font-size: 2rem;
     }
-    .cart-btn {
+    .cart-button  {
         margin: 0 0.5rem 0 auto
     }
-    .cart-btn,
+    .cart-button ,
     .menu-btn {
         display: block;
     }
