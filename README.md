@@ -177,6 +177,9 @@ Cart
 1. Go to Shop page
 2. Click add to cart
 3. In popup modal add quantity then click add to cart
+
+   \*When Buy Now is selected, it will redirect you to checkout page immediately
+
 4. On the top right click cart button
 5. Click Proceed to Checkout
 6. Fill the form
@@ -193,7 +196,7 @@ I did not put email validator on this form so its ok to input anything.
 
 \*If paypal is selected
 
-<img src="images/readMe/paypal_button.png" alt="Paypal payment" width="500">
+<img src="./public/readMe/paypal_button.png" alt="Paypal payment" width="500">
 
 ### Test Payment
 
@@ -227,6 +230,6 @@ https://apps.naaccr.org/vpr-cls/about-postal-codes
 
 \*If Cash-On-Delivery is selected just fill the form then click place order button
 
-<img src="images/readMe/COD.png" alt="COD payment" width="500">
+<img src="./public/images/readMe/COD.png" alt="COD payment" width="500">
 
 \*Loading and rendering of data may take some few seconds up to 20 seconds depending to the Google apps script and/or Render backend
