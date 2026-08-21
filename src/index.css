@@ -228,6 +228,7 @@ nav {
         height: var(--nav-height-mobile);
         overflow: hidden;
         width: 100%;
+        overflow: hidden;
     }
     .nav-links {
         position: fixed;
@@ -264,7 +265,7 @@ nav {
         font-size: 2rem;
     }
     .cart-button  {
-        margin: 0 0.5rem 0 0
+        margin: 0 0.5rem 0 auto
     }
     .cart-button ,
     .menu-btn {
