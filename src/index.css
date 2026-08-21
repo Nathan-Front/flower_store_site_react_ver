@@ -228,7 +228,6 @@ nav {
         height: var(--nav-height-mobile);
         overflow: hidden;
         width: 100%;
-        overflow: hidden;
     }
     .nav-links {
         position: fixed;
