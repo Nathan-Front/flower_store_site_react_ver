@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { OverlayContext } from "../loadingComponent/OverlayContext";
 import Cart from "../cart/Cart";
 import { CartCount } from "../hooks/cartCount.js";
@@ -13,6 +13,20 @@ export default function Nav({ cartItems, updateCart }) {
   };
   let cartCnt = CartCount(cartItems); //pass to calculate total
 
+  //burger button
+  const [isSetBurger, setBurger] = useState(false);
+  useEffect(() => {
+    if (isSetBurger) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+  }, [isSetBurger]);
+
+  //close nav when link is clicked
+  const closeBurger = () => {
+    setBurger(false);
+  };
   return (
     <>
       <nav>
@@ -22,26 +36,41 @@ export default function Nav({ cartItems, updateCart }) {
             Flos <span>&</span> Florere
           </h1>
         </div>
-        <ul className="nav-links">
+        <ul className={`nav-links ${isSetBurger ? "openNav" : ""}`}>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={closeBurger}>
+              Home
+            </Link>
           </li>
           <li>
-            <Link to="/shop">Shop</Link>
+            <Link to="/shop" onClick={closeBurger}>
+              Shop
+            </Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/about" onClick={closeBurger}>
+              About
+            </Link>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <Link to="/contact" onClick={closeBurger}>
+              Contact
+            </Link>
           </li>
         </ul>
         <button className="cart-button" onClick={() => openCartHandler()}>
           <i className="fa-solid fa-cart-shopping"></i>
           <span className="cart-count">{cartCnt}</span>
         </button>
-        <button className="menu-btn" aria-label="menu-button">
-          <i className="fa-solid fa-bars" id="menu-icon"></i>
+        <button
+          className="menu-btn"
+          aria-label="menu-button"
+          onClick={() => setBurger((prev) => !prev)}
+        >
+          <i
+            className={`fa-solid ${!isSetBurger ? "fa-bars" : "fa-xmark"}`}
+            id="menu-icon"
+          ></i>
         </button>
       </nav>
       <Cart
