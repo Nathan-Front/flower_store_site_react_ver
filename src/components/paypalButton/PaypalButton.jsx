@@ -1,5 +1,5 @@
 import { useEffect, useRef, useContext } from "react";
-import { OverlayContext } from "../loadingComponent/OverlayContext";
+
 export default function PaypalButton({
   formDataRef,
   dataParams,
@@ -8,6 +8,8 @@ export default function PaypalButton({
   setOrderResult,
   setIsOpen,
   setSpinner,
+  setIsInput,
+  initialForm,
 }) {
   /* const [orderResult, setOrderResult] = useState(null); */
   console.log("PaypalButton rendered");
@@ -41,19 +43,18 @@ export default function PaypalButton({
           label: "paypal",
         },
 
-        onInit(data, actions) {
+        /*   onInit(data, actions) {
           /* paypalActions = actions;  */
-          //Store actions for later use in form validation
-          /* actions.disable(); */
-          /*  checkFormValidity(); */
-          console.log("🔥 PAYPAL INIT");
+        //Store actions for later use in form validation
+        /* actions.disable(); */
+        /*  checkFormValidity(); */
+        /*    console.log("🔥 PAYPAL INIT");
           actions.enable();
-        },
+        }, */
 
         async createOrder() {
           console.log("🔥 CREATE ORDER CALLED");
           // Get the order details from the form and localstorage
-          /* const orderDetails = dataParams; */
           const orderDetails = {
             cart: dataParams.cart,
             customer: formDataRef.current.customer,
@@ -66,12 +67,13 @@ export default function PaypalButton({
             );
           }
 
+          //send the cart and customer info to render backend
           const response = await fetch(`${SERVER_URL}/api/orders`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(orderDetails), //Send cart and customer info to the server
+            body: JSON.stringify(orderDetails),
           });
 
           const data = await response.json();
@@ -84,8 +86,6 @@ export default function PaypalButton({
 
         async onApprove(data, actions) {
           console.log("🔥 ON APPROVE", data);
-          /* showLoadingOverlay(); */
-
           //loader
           setIsOpen(true);
           setSpinner("credit");
@@ -102,14 +102,13 @@ export default function PaypalButton({
               },
             );
 
-            //const orderData = await response.json(); the original code
             const result = await response.json(); //capture the passed result from the server.js
             setOrderResult(result);
             // Three cases to handle:
             //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
             //   (2) Other non-recoverable errors -> Show a failure message
             //   (3) Successful transaction -> Show confirmation or thank you message
-            console.log("FULL SERVER RESULT:", result);
+            console.log("FULL SERVER RESULT:", result); //data received from render backend (jsonResponse: JSON.parse(body))
             console.log("Payment type:", result.type);
             console.log("Google Script result:", result.googleScript);
             console.log("Full response:", result);
@@ -119,7 +118,6 @@ export default function PaypalButton({
               // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
               // recoverable state, per
               // https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-              /* hideLoadingOverlay(); */
 
               return actions.restart();
             } else if (errorDetail) {
@@ -132,14 +130,6 @@ export default function PaypalButton({
             } else {
               // (3) Successful transaction -> Show confirmation or thank you message
               // Or go to another URL:  actions.redirect('thank_you.html');
-              /* const transaction =
-                result.paypal?.purchase_units?.[0]?.payments?.captures?.[0] ||
-                result.paypal?.purchase_units?.[0]?.payments
-                  ?.authorizations?.[0];
-               resultMessage(
-                `Transaction ${transaction.status}: ${transaction.id}
-                  <br>Thank you for trying our service!<br>`,
-              );  */
               console.log("Capture result", result.paypal);
             }
 
@@ -147,15 +137,14 @@ export default function PaypalButton({
               console.log("Result: " + result);
               console.log("googleScript: " + result.googleScript);
               onOrderComplete(result);
+              setIsInput(initialForm);
             }
           } catch (error) {
-            /* hideLoadingOverlay(); */
-
             console.error(error);
             console.error("🔥 PAYPAL ERROR", error);
-            /* resultMessage(
-              `Sorry, your transaction could not be processed...<br><br>${error}`,
-            ); */
+            resultMessage(
+              `Sorry, your transaction could not be processed...<br><br>Please try again or choose another payment method.`,
+            );
           } finally {
             setIsOpen(false);
             setSpinner(null);

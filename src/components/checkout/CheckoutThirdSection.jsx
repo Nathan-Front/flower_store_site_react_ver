@@ -63,15 +63,10 @@ export default function CheckoutThirdSection({
   //enable/disable whole form container
   useEffect(() => {
     if (!formRef.current) return;
-
     const hasItems = checkoutProducts.length > 0;
     const hasLoaded = dataSettings.length > 0;
     const canEnableForm = hasItems && hasLoaded;
     formRef.current.classList.toggle("form-disabled", !canEnableForm); //hasItems true = remove form-disabled, false = add form-disabled
-    //get all form elements and disable them if cart is empty
-    /* [...formRef.current.elements].forEach((element) => {
-      element.disabled = !canEnableForm;
-    }); */
   }, [checkoutProducts, dataSettings]);
 
   //enable/disable payment method container
@@ -111,10 +106,15 @@ export default function CheckoutThirdSection({
       if (!response.ok) {
         throw new Error("Failed to place COD order.");
       }
-      const result = await response.json();
+      const result = await response.json(); //capture the passed result from the server.js
 
-      setOrderResult(result);
-      console.log("COD RESULT:", result);
+      if (result.googleScript.success) {
+        console.log("Result: " + result);
+        console.log("googleScript: " + result.googleScript);
+        setOrderResult(result);
+        console.log("COD RESULT:", result);
+        setIsInput(initialForm);
+      }
     } catch (error) {
       console.error("Failed to place COD order:", error);
       throw error;
@@ -146,6 +146,7 @@ export default function CheckoutThirdSection({
                   id="checkoutEmail"
                   placeholder="Your email@example.com"
                   required
+                  value={isInput.email}
                   onChange={inputHandler}
                 />
               </div>
@@ -157,6 +158,7 @@ export default function CheckoutThirdSection({
                   id="checkoutPhone"
                   placeholder="09XX XXXX XXXX"
                   required
+                  value={isInput.phone}
                   onChange={inputHandler}
                 />
               </div>
@@ -178,6 +180,7 @@ export default function CheckoutThirdSection({
                   id="checkoutName"
                   placeholder="John Doe"
                   required
+                  value={isInput.name}
                   onChange={inputHandler}
                 />
               </div>
@@ -189,6 +192,7 @@ export default function CheckoutThirdSection({
                   id="checkoutAddress"
                   placeholder="Street, block, building, house number"
                   required
+                  value={isInput.address}
                   onChange={inputHandler}
                 />
               </div>
@@ -201,6 +205,7 @@ export default function CheckoutThirdSection({
                     id="checkoutCity"
                     placeholder="City"
                     required
+                    value={isInput.city}
                     onChange={inputHandler}
                   />
                 </div>
@@ -212,6 +217,7 @@ export default function CheckoutThirdSection({
                     id="checkoutZip"
                     placeholder="Zip code"
                     required
+                    value={isInput.zip}
                     onChange={inputHandler}
                   />
                 </div>
@@ -223,6 +229,7 @@ export default function CheckoutThirdSection({
                     id="checkoutDate"
                     placeholder="Select delivery date"
                     required
+                    value={isInput.date}
                     onChange={inputHandler}
                   />
                 </div>
@@ -234,6 +241,7 @@ export default function CheckoutThirdSection({
                     id="checkoutTime"
                     placeholder="Select desired time"
                     required
+                    value={isInput.time}
                     onChange={inputHandler}
                   />
                 </div>
@@ -244,6 +252,7 @@ export default function CheckoutThirdSection({
                   name="note"
                   placeholder="Order note"
                   id="order-note"
+                  value={isInput.note}
                   onChange={inputHandler}
                 ></textarea>
               </div>
@@ -298,6 +307,8 @@ export default function CheckoutThirdSection({
                       setOrderResult={setOrderResult}
                       setIsOpen={setIsOpen}
                       setSpinner={setSpinner}
+                      setIsInput={setIsInput}
+                      initialForm={initialForm}
                     />
                     <p id="result-message"></p>
                   </div>

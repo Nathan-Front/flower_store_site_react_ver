@@ -30,7 +30,7 @@ const allowedOrigins = [
   "http://127.0.0.1:8080",
   "https://nathan-front.github.io",
 ];
-const pendingOrders = new Map(); //for pending orders, to be used for order capture after approval
+const pendingOrders = new Map(); //for pending orders, to be used for order capture after approval. Serve as temporary memory/storage
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -74,18 +74,18 @@ const client = new Client({
   },
 });
 
-const ordersController = new OrdersController(client);
+const ordersController = new OrdersController(client); //connect the ordered product details to Paypal API client
 const paymentsController = new PaymentsController(client);
 
 /**
  * Create an order to start the transaction.
  * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
  */
+//use the passed order from frontend for apps script
 const createOrder = async (cart) => {
   //google apps script url
   const response = await fetch(`${GOOGLE_SCRIPT_URL}?type=checkout`);
   console.log("Google Script URL:", GOOGLE_SCRIPT_URL);
-  //console.log("Sending orderData:", orderData);
   const settings = await response.json();
 
   const items = cart.map((cartItem) => ({
@@ -154,7 +154,7 @@ const createOrder = async (cart) => {
 
   try {
     const { body, ...httpResponse } =
-      await ordersController.createOrder(collect);
+      await ordersController.createOrder(collect); //separate body from the content of response (Response 201 501 application/json from render backend)
     console.log("✅ PayPal order created:", body);
     return {
       jsonResponse: JSON.parse(body),
@@ -177,11 +177,12 @@ const createOrder = async (cart) => {
   }
 };
 
-// createOrder route for paypal
+// createOrder route for Render backend
+// get request and respone to render backend "/api/orders" should be the same in paypal button when sending order to backend
 app.post("/api/orders", async (req, res) => {
   console.log("🔥 /api/orders was called");
   try {
-    //use the cart information passed from the front-end
+    //use the cart information received from frontend
     const { cart, customer, paymentMethod } = req.body;
     console.log("Cart received:", cart);
     console.log("Customer received:", customer);
@@ -194,11 +195,12 @@ app.post("/api/orders", async (req, res) => {
     }
 
     const { jsonResponse, httpStatusCode, orderCalculation } =
-      await createOrder(cart);
+      await createOrder(cart); //get the created order from frontend
 
     if (!jsonResponse?.id) {
       throw new Error("PayPal did not return an order ID");
     }
+
     pendingOrders.set(jsonResponse.id, {
       cart,
       customer,
@@ -207,7 +209,7 @@ app.post("/api/orders", async (req, res) => {
     });
 
     console.log("Saved pending order:", pendingOrders.get(jsonResponse.id));
-    res.status(httpStatusCode).json(jsonResponse);
+    res.status(httpStatusCode).json(jsonResponse); //Send to frontend as a result
   } catch (error) {
     console.error("Failed to create order:", error);
     res.status(500).json({ error: "Failed to create order." });
@@ -334,10 +336,11 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
         body: JSON.stringify(orderData),
       });
 
-      const result = await response.json();
+      const result = await response.json(); //result from apps script
       if (!result.success) {
         return res.status(500).json(result);
       }
+      //pass the data to frontend
       return res.status(httpStatusCode).json({
         success: true,
         type: "paypal",
@@ -418,7 +421,7 @@ app.post("/api/orders/cod", async (req, res) => {
       },
       body: JSON.stringify(orderData),
     });
-    const result = await sheetResponse.json();
+    const result = await sheetResponse.json(); //result from apps script
     if (!result.success) {
       return res.status(500).json(result);
     }
