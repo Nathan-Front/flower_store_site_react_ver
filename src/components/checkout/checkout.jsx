@@ -5,7 +5,7 @@ import { useState } from "react";
 import "./checkoutFirstSection.css";
 import useFetch from "../hooks/renderFetchData.js";
 import { formatCartDisplay } from "../hooks/dataFormatter.js";
-export default function Checkout({ updateCart, cartItems }) {
+export default function Checkout({ updateCart }) {
   const {
     data: dataSettings, //rename the data and render its contents
     loading,
@@ -25,10 +25,10 @@ export default function Checkout({ updateCart, cartItems }) {
         setCheckoutProducts={setCheckoutProducts}
       />
       <CheckoutThirdSection
-        cartItems={cartItems}
         checkoutProducts={checkoutProducts}
         dataSettings={dataSettings}
         setCheckoutProducts={setCheckoutProducts}
+        updateCart={updateCart}
       />
     </div>
   );

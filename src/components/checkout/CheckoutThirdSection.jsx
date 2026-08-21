@@ -6,6 +6,8 @@ import Overlay from "../loadingComponent/Overlay.jsx";
 export default function CheckoutThirdSection({
   checkoutProducts,
   dataSettings,
+  setCheckoutProducts,
+  updateCart,
 }) {
   const [isPaypal, setPaypal] = useState("");
   const [isSetPayment, setPayment] = useState(false);
@@ -114,6 +116,9 @@ export default function CheckoutThirdSection({
         setOrderResult(result);
         console.log("COD RESULT:", result);
         setIsInput(initialForm);
+        setCheckoutProducts([]);
+        localStorage.removeItem("temporaryCart");
+        updateCart([]);
       }
     } catch (error) {
       console.error("Failed to place COD order:", error);
@@ -309,6 +314,8 @@ export default function CheckoutThirdSection({
                       setSpinner={setSpinner}
                       setIsInput={setIsInput}
                       initialForm={initialForm}
+                      setCheckoutProducts={setCheckoutProducts}
+                      updateCart={updateCart}
                     />
                     <p id="result-message"></p>
                   </div>

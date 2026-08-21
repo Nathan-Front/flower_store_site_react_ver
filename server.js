@@ -410,7 +410,7 @@ app.post("/api/orders/cod", async (req, res) => {
       date: new Date().toISOString().replace("T", " ").substring(0, 19),
       customer,
       cart,
-      orderCalculation, // pass the block
+      orderCalculation,
       paymentMethod,
     });
     console.log("Order data to send to Google Script:", orderData);

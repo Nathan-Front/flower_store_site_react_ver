@@ -10,6 +10,8 @@ export default function PaypalButton({
   setSpinner,
   setIsInput,
   initialForm,
+  setCheckoutProducts,
+  updateCart,
 }) {
   /* const [orderResult, setOrderResult] = useState(null); */
   console.log("PaypalButton rendered");
@@ -138,6 +140,9 @@ export default function PaypalButton({
               console.log("googleScript: " + result.googleScript);
               onOrderComplete(result);
               setIsInput(initialForm);
+              setCheckoutProducts([]);
+              localStorage.removeItem("temporaryCart");
+              updateCart([]);
             }
           } catch (error) {
             console.error(error);

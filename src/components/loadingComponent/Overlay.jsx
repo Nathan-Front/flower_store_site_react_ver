@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 export default function Overlay({ type, paypal, orderResult, onClose }) {
   useEffect(() => {
     if (type === "COD" || type === "success") {
@@ -11,6 +12,8 @@ export default function Overlay({ type, paypal, orderResult, onClose }) {
       document.body.classList.remove("no-scroll");
     };
   }, [type]);
+
+  const navigate = useNavigate();
   return (
     <div className="overlay">
       {type === "loading" && <span className="overlay-spinner"></span>}
@@ -48,7 +51,10 @@ export default function Overlay({ type, paypal, orderResult, onClose }) {
               </>
             )}
             <small>Please check your email for order details.</small>
-            <button id="close-order-success-modal" onClick={onClose}>
+            <button
+              id="close-order-success-modal"
+              onClick={() => navigate("/shop")}
+            >
               Close
             </button>
           </div>
